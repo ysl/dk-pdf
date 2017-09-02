@@ -1,8 +1,8 @@
-<?php
+<?php # -*- coding: utf-8 -*-
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+namespace Dinamiko\DKPDF\Admin;
 
-class DKPDF_Settings {
+class Settings {
 
 	private static $_instance = null;
 	public $parent = null;
@@ -12,7 +12,7 @@ class DKPDF_Settings {
 
 	public function __construct ( $parent ) {
 
-		$this->parent = $parent;
+		$this->admin = $parent;
 
 		$this->base = 'dkpdf_';
 
@@ -27,6 +27,33 @@ class DKPDF_Settings {
 
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( DKPDF_PLUGIN_FILE ) , array( $this, 'add_settings_link' ) );
+
+	}
+
+	public /**
+	 * returns an array of active post, page, attachment and custom post types
+	 * @return array
+	 */
+	function dkpdf_get_post_types() {
+
+		$args = array(
+			'public'   => true,
+			'_builtin' => false
+		);
+
+		$post_types = get_post_types( $args );
+		$post_arr = array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment' );
+
+		foreach ( $post_types  as $post_type ) {
+
+			$arr = array( $post_type => $post_type );
+			$post_arr += $arr;
+
+		}
+
+		$post_arr = apply_filters( 'dkpdf' . '_posts_arr', $post_arr );
+
+		return $post_arr;
 
 	}
 
@@ -131,7 +158,7 @@ class DKPDF_Settings {
 	 */
 	private function settings_fields () {
 
-		$post_types_arr = dkpdf_get_post_types();
+		$post_types_arr = $this->dkpdf_get_post_types();
 
 		// pdf button settings
 		$settings['pdfbtn'] = array(
@@ -387,7 +414,7 @@ class DKPDF_Settings {
 					register_setting( 'dkpdf' . '_settings', $option_name, $validation );
 
 					// Add field to page
-					add_settings_field( $field['id'], $field['label'], array( $this->parent->admin, 'display_field' ), 'dkpdf' . '_settings', $section, array( 'field' => $field, 'prefix' => $this->base ) );
+					add_settings_field( $field['id'], $field['label'], array( $this->admin, 'display_field' ), 'dkpdf' . '_settings', $section, array( 'field' => $field, 'prefix' => $this->base ) );
 				}
 
 				if ( ! $current_section ) break;

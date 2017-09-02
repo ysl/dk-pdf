@@ -1,13 +1,14 @@
-<?php
+<?php # -*- coding: utf-8 -*-
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+namespace Dinamiko\DKPDF\Admin;
 
-class DKPDF_Admin_API {
+class AdminAPI {
 
 	/**
 	 * Constructor function
 	 */
 	public function __construct () {
+
 		add_action( 'save_post', array( $this, 'save_meta_boxes' ), 10, 1 );
 	}
 

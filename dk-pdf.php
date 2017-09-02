@@ -13,8 +13,45 @@
  * Domain Path: /languages/
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+namespace Dinamiko\DKPDF;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'DKPDF_VERSION', '1.9.2' );
+define( 'DKPDF_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'DKPDF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define( 'DKPDF_PLUGIN_FILE', __FILE__ );
+
+/*
+ * Initialize all the plugin things.
+ *
+ * @throws \Throwable
+ */
+function initialize() {
+
+	try {
+
+		if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+			/** @noinspection PhpIncludeInspection */
+			require_once __DIR__ . '/vendor/autoload.php';
+		}
+
+		( new DKPDF )->init();
+
+	} catch ( \Throwable $e ) {
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			throw $e;
+		}
+
+		do_action( 'dinamiko.dkpdf.error', $e );
+	}
+}
+
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\initialize' );
+
+/*
 if ( ! class_exists( 'DKPDF' ) ) {
 
 	final class DKPDF {
@@ -100,3 +137,4 @@ function DKPDF() {
 }
 
 DKPDF();
+*/
