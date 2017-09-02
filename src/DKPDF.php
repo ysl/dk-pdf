@@ -4,6 +4,7 @@ namespace Dinamiko\DKPDF;
 
 use Dinamiko\DKPDF\Admin\AdminAPI;
 use Dinamiko\DKPDF\Admin\Settings;
+use Dinamiko\DKPDF\Common\MetaBox;
 
 class DKPDF {
 
@@ -13,8 +14,12 @@ class DKPDF {
 
 		if ( is_admin() ) {
 			$admin = new AdminAPI();
-			new Settings( $admin );
+			( new Settings( $admin ) );
+
+			( new MetaBox() )->init();
 		}
+
+
 
 		/*
 			// settings / metaboxes
