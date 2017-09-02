@@ -4,8 +4,10 @@ namespace Dinamiko\DKPDF;
 
 use Dinamiko\DKPDF\Admin\AdminAPI;
 use Dinamiko\DKPDF\Admin\Settings;
-use Dinamiko\DKPDF\Common\AssetManager;
 use Dinamiko\DKPDF\Common\MetaBox;
+use Dinamiko\DKPDF\Common\AssetManager;
+use Dinamiko\DKPDF\Common\TemplateLoader;
+use Dinamiko\DKPDF\Common\Shortcode;
 
 class DKPDF {
 
@@ -21,6 +23,9 @@ class DKPDF {
 
 		( new AssetManager() )->init();
 
+		$template = new TemplateLoader();
+		( new Shortcode( $template ) )->init();
+
 		/*
 			// functions
 			require_once DKPDF_PLUGIN_DIR . 'includes/dkpdf-functions.php';
@@ -28,6 +33,6 @@ class DKPDF {
 			// shortcodes
 			require_once DKPDF_PLUGIN_DIR . 'includes/class-dkpdf-template-loader.php';
 			require_once DKPDF_PLUGIN_DIR . 'includes/dkpdf-shortcodes.php';
-		 */
+		*/
 	}
 }
