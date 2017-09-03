@@ -8,6 +8,7 @@ use Dinamiko\DKPDF\Common\MetaBox;
 use Dinamiko\DKPDF\Common\AssetManager;
 use Dinamiko\DKPDF\Common\TemplateLoader;
 use Dinamiko\DKPDF\Common\Shortcode;
+use Dinamiko\DKPDF\PDF\Display;
 
 class DKPDF {
 
@@ -26,13 +27,6 @@ class DKPDF {
 		$template = new TemplateLoader();
 		( new Shortcode( $template ) )->init();
 
-		/*
-			// functions
-			require_once DKPDF_PLUGIN_DIR . 'includes/dkpdf-functions.php';
-
-			// shortcodes
-			require_once DKPDF_PLUGIN_DIR . 'includes/class-dkpdf-template-loader.php';
-			require_once DKPDF_PLUGIN_DIR . 'includes/dkpdf-shortcodes.php';
-		*/
+		( new Display( $template ) )->init();
 	}
 }

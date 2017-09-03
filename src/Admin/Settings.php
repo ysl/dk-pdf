@@ -9,6 +9,7 @@ class Settings {
 	public $_token;
 	public $base = '';
 	public $settings = array();
+	private $admin;
 
 	public function __construct ( $parent ) {
 
@@ -28,13 +29,15 @@ class Settings {
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( DKPDF_PLUGIN_FILE ) , array( $this, 'add_settings_link' ) );
 
+		// Sanitize options
+		add_action( 'init', array( $this, 'dkpdf_sanitize_options' ) );
 	}
 
-	public /**
+	/**
 	 * returns an array of active post, page, attachment and custom post types
 	 * @return array
 	 */
-	function dkpdf_get_post_types() {
+	public function dkpdf_get_post_types() {
 
 		$args = array(
 			'public'   => true,
@@ -500,6 +503,241 @@ class Settings {
 		$html .= '</div>' . "\n";
 
 		echo $html;
+	}
+
+	/**
+	 * sanitizes dkpdf options
+	 */
+	public function dkpdf_sanitize_options() {
+
+		add_filter( 'pre_update_option_dkpdf_pdfbutton_text', array( $this, 'dkpdf_update_field_dkpdf_pdfbutton_text'), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdfbutton_post_types', array( $this, 'dkpdf_update_field_dkpdf_pdfbutton_post_types' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdfbutton_action', array( $this, 'dkpdf_update_field_dkpdf_pdfbutton_action' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdfbutton_position', array( $this, 'dkpdf_update_field_dkpdf_pdfbutton_position' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdfbutton_align', array( $this, 'dkpdf_update_field_dkpdf_pdfbutton_align' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_page_orientation', array( $this, 'dkpdf_update_field_dkpdf_page_orientation' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_font_size', array( $this, 'dkpdf_update_field_dkpdf_font_size' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_margin_left', array( $this, 'dkpdf_update_field_dkpdf_margin_left' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_margin_right', array( $this, 'dkpdf_update_field_dkpdf_margin_right' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_margin_top', array( $this, 'dkpdf_update_field_dkpdf_margin_top' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_margin_bottom', array( $this, 'dkpdf_update_field_dkpdf_margin_bottom' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_margin_header', array( $this, 'dkpdf_update_field_dkpdf_margin_header' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_header_image', array( $this, 'dkpdf_update_field_dkpdf_pdf_header_image' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_header_show_title', array( $this, 'dkpdf_update_field_dkpdf_pdf_header_show_title' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_header_show_pagination', array( $this, 'dkpdf_update_field_dkpdf_pdf_header_show_pagination' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_footer_text', array( $this, 'dkpdf_update_field_dkpdf_pdf_footer_text' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_footer_show_title', array( $this, 'dkpdf_update_field_dkpdf_pdf_footer_show_title' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_footer_show_pagination', array( $this, 'dkpdf_update_field_dkpdf_pdf_footer_show_pagination' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_pdf_custom_css', array( $this, 'dkpdf_update_field_dkpdf_pdf_custom_css' ), 10, 2 );
+		add_filter( 'pre_update_option_dkpdf_print_wp_head', array( $this, 'dkpdf_update_field_dkpdf_print_wp_head' ), 10, 2 );
+	}
+
+	/**
+	 * sanitizes dkpdf_pdfbutton_text option
+	 */
+	public function dkpdf_update_field_dkpdf_pdfbutton_text( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdfbutton_post_types option
+	 */
+	public function dkpdf_update_field_dkpdf_pdfbutton_post_types( $new_value, $old_value ) {
+		// TODO sanitize_text_field doesn't work
+		//$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdfbutton_action option
+	 */
+	public function dkpdf_update_field_dkpdf_pdfbutton_action( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdfbutton_position option
+	 */
+	public function dkpdf_update_field_dkpdf_pdfbutton_position( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdfbutton_align option
+	 */
+	public function dkpdf_update_field_dkpdf_pdfbutton_align( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_page_orientation option
+	 */
+	public function dkpdf_update_field_dkpdf_page_orientation( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_font_size option
+	 */
+	public function dkpdf_update_field_dkpdf_font_size( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_margin_left option
+	 */
+	public function dkpdf_update_field_dkpdf_margin_left( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_margin_right option
+	 */
+	public function dkpdf_update_field_dkpdf_margin_right( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_margin_top option
+	 */
+	public function dkpdf_update_field_dkpdf_margin_top( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_margin_bottom option
+	 */
+	public function dkpdf_update_field_dkpdf_margin_bottom( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_margin_header option
+	 */
+	public function dkpdf_update_field_dkpdf_margin_header( $new_value, $old_value ) {
+		$new_value = intval( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_header_image option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_header_image( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_header_show_title option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_header_show_title( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_header_show_pagination option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_header_show_pagination( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_footer_text option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_footer_text( $new_value, $old_value ) {
+
+		$arr = array(
+			'a' => array(
+				'href' => array(),
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'br' => array(),
+			'em' => array(),
+			'strong' => array(),
+			'hr' => array(),
+			'p' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'h1' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'h2' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'h3' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'h4' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			),
+			'div' => array(
+				'title' => array(),
+				'class' => array(),
+				'style' => array()
+			)
+		);
+
+		$new_value = wp_kses( $new_value, $arr );
+		return $new_value;
+
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_header_show_pagination option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_footer_show_title( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_header_show_pagination option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_footer_show_pagination( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_pdf_custom_css option
+	 */
+	public function dkpdf_update_field_dkpdf_pdf_custom_css( $new_value, $old_value ) {
+		$new_value = wp_filter_nohtml_kses( $new_value );
+		$new_value = str_replace('\"', '"', $new_value);
+		$new_value = str_replace("\'", "'", $new_value);
+		return $new_value;
+	}
+
+	/**
+	 * sanitizes dkpdf_print_wp_head option
+	 */
+	public function dkpdf_update_field_dkpdf_print_wp_head( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );
+		return $new_value;
 	}
 
 	/**

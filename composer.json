@@ -3,6 +3,9 @@
     "description": "WordPress to PDF made easy.",
     "type": "wordpress-plugin",
     "license": "MIT",
+    "require": {
+        "mpdf/mpdf": "^6.1"
+    },
     "autoload": {
         "psr-4": {
             "Dinamiko\\DKPDF\\": "src/"

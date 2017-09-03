@@ -4,8 +4,16 @@ namespace Dinamiko\DKPDF\Common;
 
 class Shortcode {
 
+	/**
+	 * @var TemplateLoader
+	 */
 	private $template;
 
+	/**
+	 * Constructor. Sets up the properties.
+	 *
+	 * @param TemplateLoader $template
+	 */
 	public function __construct( TemplateLoader $template ) {
 
 		$this->template = $template;
