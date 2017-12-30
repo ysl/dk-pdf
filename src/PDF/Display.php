@@ -40,11 +40,13 @@ class Display {
 		// if is generated pdf don't show pdf button
 		$pdf = get_query_var( 'pdf' );
 
-		if( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
+		if ( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
 
-			if ( $pdf || apply_filters( 'dkpdf_hide_button_equal', $_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' )  ) {
+			if ( $pdf
+			     || apply_filters( 'dkpdf_hide_button_equal',
+					$_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' ) ) {
 
-				remove_shortcode('dkpdf-button');
+				remove_shortcode( 'dkpdf-button' );
 				$content = str_replace( "[dkpdf-button]", "", $content );
 
 				return $content;
@@ -55,7 +57,7 @@ class Display {
 
 			if ( $pdf ) {
 
-				remove_shortcode('dkpdf-button');
+				remove_shortcode( 'dkpdf-button' );
 				$content = str_replace( "[dkpdf-button]", "", $content );
 
 				return $content;
@@ -67,12 +69,15 @@ class Display {
 		global $post;
 		$post_type = get_post_type( $post->ID );
 
-		$option_post_types = sanitize_option( 'dkpdf_pdfbutton_post_types', get_option( 'dkpdf_pdfbutton_post_types', array() ) );
+		$option_post_types = sanitize_option( 'dkpdf_pdfbutton_post_types',
+			get_option( 'dkpdf_pdfbutton_post_types', array() ) );
 
-		if ( is_archive() || is_front_page() || is_home() ) { return $content; }
+		if ( is_archive() || is_front_page() || is_home() ) {
+			return $content;
+		}
 
 		// return content if not checked
-		if( $option_post_types ) {
+		if ( $option_post_types ) {
 
 			if ( ! in_array( get_post_type( $post ), $option_post_types ) ) {
 
@@ -82,22 +87,22 @@ class Display {
 
 		}
 
-		if( $option_post_types ) {
+		if ( $option_post_types ) {
 
 			if ( in_array( get_post_type( $post ), $option_post_types ) ) {
 
 				$c = $content;
 
-				$pdfbutton_position = sanitize_option( 'dkpdf_pdfbutton_position', get_option( 'dkpdf_pdfbutton_position', 'before' ) );
+				$pdfbutton_position = sanitize_option( 'dkpdf_pdfbutton_position',
+					get_option( 'dkpdf_pdfbutton_position', 'before' ) );
 
-
-				if( $pdfbutton_position ) {
+				if ( $pdfbutton_position ) {
 
 					if ( $pdfbutton_position == 'shortcode' ) {
 						return $c;
 					}
 
-					if( $pdfbutton_position == 'before' ) {
+					if ( $pdfbutton_position == 'before' ) {
 
 						ob_start();
 
@@ -128,42 +133,44 @@ class Display {
 
 		$pdf = sanitize_text_field( get_query_var( 'pdf' ) );
 
-		if( $pdf ) {
+		if ( $pdf ) {
 
-			// page orientation
-			$dkpdf_page_orientation = get_option( 'dkpdf_page_orientation', '' );
-
-			if ( $dkpdf_page_orientation == 'horizontal') {
-
-				$format = apply_filters( 'dkpdf_pdf_format', 'A4' ).'-L';
-
-			} else {
-
-				$format = apply_filters( 'dkpdf_pdf_format', 'A4' );
-
-			}
+			require_once DKPDF_PLUGIN_DIR . '/vendor/autoload.php';
 
 			// font size
 			$dkpdf_font_size = get_option( 'dkpdf_font_size', '12' );
-			$dkpdf_font_family = '';
+
+			// page orientation
+			$dkpdf_page_orientation = get_option( 'dkpdf_page_orientation', 'vertical' );
+			if ( $dkpdf_page_orientation == 'horizontal' ) {
+				$format = apply_filters( 'dkpdf_pdf_format', 'A4' ) . '-L';
+			} else {
+				$format = apply_filters( 'dkpdf_pdf_format', 'A4' );
+			}
 
 			// margins
-			$dkpdf_margin_left = get_option( 'dkpdf_margin_left', '15' );
-			$dkpdf_margin_right = get_option( 'dkpdf_margin_right', '15' );
-			$dkpdf_margin_top = get_option( 'dkpdf_margin_top', '50' );
+			$dkpdf_margin_left   = get_option( 'dkpdf_margin_left', '15' );
+			$dkpdf_margin_right  = get_option( 'dkpdf_margin_right', '15' );
+			$dkpdf_margin_top    = get_option( 'dkpdf_margin_top', '50' );
 			$dkpdf_margin_bottom = get_option( 'dkpdf_margin_bottom', '30' );
 			$dkpdf_margin_header = get_option( 'dkpdf_margin_header', '15' );
 
-			// creating and setting the pdf
-			$mpdf = new \mPDF( 'utf-8', $format, $dkpdf_font_size, $dkpdf_font_family,
-				$dkpdf_margin_left, $dkpdf_margin_right, $dkpdf_margin_top, $dkpdf_margin_bottom,
-				$dkpdf_margin_header );
+			$mpdf                = new \Mpdf\Mpdf( [
+				'tempDir'           => DKPDF_PLUGIN_DIR . '/tmp',
+				'default_font_size' => $dkpdf_font_size,
+				'format'            => $format,
+				'margin_left'       => $dkpdf_margin_left,
+				'margin_right'      => $dkpdf_margin_right,
+				'margin_top'        => $dkpdf_margin_top,
+				'margin_bottom'     => $dkpdf_margin_bottom,
+				'margin_header'     => $dkpdf_margin_header,
+			] );
 
 			// encrypts and sets the PDF document permissions
 			// https://mpdf.github.io/reference/mpdf-functions/setprotection.html
 			$enable_protection = get_option( 'dkpdf_enable_protection' );
 
-			if( $enable_protection == 'on' ) {
+			if ( $enable_protection == 'on' ) {
 				$grant_permissions = get_option( 'dkpdf_grant_permissions' );
 				$mpdf->SetProtection( $grant_permissions );
 			}
@@ -171,7 +178,7 @@ class Display {
 			// keep columns
 			$keep_columns = get_option( 'dkpdf_keep_columns' );
 
-			if( $keep_columns == 'on' ) {
+			if ( $keep_columns == 'on' ) {
 				$mpdf->keepColumns = true;
 			}
 
@@ -195,22 +202,22 @@ class Display {
 			$mpdf->WriteHTML( apply_filters( 'dkpdf_after_content', '' ) );
 
 			// action to do (open or download)
-			$pdfbutton_action = sanitize_option( 'dkpdf_pdfbutton_action', get_option( 'dkpdf_pdfbutton_action', 'open' ) );
+			$pdfbutton_action = sanitize_option( 'dkpdf_pdfbutton_action',
+				get_option( 'dkpdf_pdfbutton_action', 'open' ) );
 
+			global $post;
 			$title = apply_filters( 'dkpdf_pdf_filename', get_the_title( $post->ID ) );
 
 			$mpdf->SetTitle( $title );
 			$mpdf->SetAuthor( apply_filters( 'dkpdf_pdf_author', get_bloginfo( 'name' ) ) );
 
-			global $post;
+			if ( $pdfbutton_action == 'open' ) {
 
-			if( $pdfbutton_action == 'open') {
-
-				$mpdf->Output( $title.'.pdf', 'I' );
+				$mpdf->Output( $title . '.pdf', 'I' );
 
 			} else {
 
-				$mpdf->Output($title.'.pdf', 'D' );
+				$mpdf->Output( $title . '.pdf', 'D' );
 
 			}
 
@@ -231,6 +238,7 @@ class Display {
 
 		ob_start();
 		$this->template->get_template_part( $template_name );
+
 		return ob_get_clean();
 	}
 
@@ -243,15 +251,15 @@ class Display {
 
 		$args = array(
 			'public'   => true,
-			'_builtin' => false
+			'_builtin' => false,
 		);
 
 		$post_types = get_post_types( $args );
-		$post_arr = array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment' );
+		$post_arr   = array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment' );
 
-		foreach ( $post_types  as $post_type ) {
+		foreach ( $post_types as $post_type ) {
 
-			$arr = array( $post_type => $post_type );
+			$arr      = array( $post_type => $post_type );
 			$post_arr += $arr;
 
 		}
@@ -271,6 +279,7 @@ class Display {
 	public function dkpdf_set_query_vars( $query_vars ) {
 
 		$query_vars[] = 'pdf';
+
 		return $query_vars;
 	}
 }

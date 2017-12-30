@@ -2,9 +2,18 @@
     "name": "dinamiko/dk-pdf",
     "description": "WordPress to PDF made easy.",
     "type": "wordpress-plugin",
-    "license": "MIT",
+    "license": "GPL-3.0+",
+    "homepage": "http://wp.dinamiko.com/demos/dkpdf",
+    "authors": [
+        {
+            "name": "Emili Castells",
+            "email": "emili.castells@dinamiko.com",
+            "role": "Developer"
+        }
+    ],
     "require": {
-        "mpdf/mpdf": "^6.1"
+        "php": ">=5.6",
+        "mpdf/mpdf": "^7.0"
     },
     "autoload": {
         "psr-4": {
