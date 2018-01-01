@@ -155,7 +155,7 @@ class Display {
 			$dkpdf_margin_bottom = get_option( 'dkpdf_margin_bottom', '30' );
 			$dkpdf_margin_header = get_option( 'dkpdf_margin_header', '15' );
 
-			$mpdf                = new \Mpdf\Mpdf( [
+			$mpdf = new \Mpdf\Mpdf( [
 				'tempDir'           => DKPDF_PLUGIN_DIR . '/tmp',
 				'default_font_size' => $dkpdf_font_size,
 				'format'            => $format,
