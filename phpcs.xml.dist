@@ -6,6 +6,8 @@
 	<file>./src</file>
 	<file>./dk-pdf.php</file>
 
+	<exclude-pattern>/tests/php/*</exclude-pattern>
+
 	<arg value="sp"/>
 
 	<!-- Set textdomain. -->

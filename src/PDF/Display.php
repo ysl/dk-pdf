@@ -31,97 +31,82 @@ class Display {
 	/**
 	 * Displays pdf button
 	 *
-	 * @param $content
+	 * @param string $content
 	 *
 	 * @return mixed|string
 	 */
 	public function dkpdf_display_pdf_button( $content ) {
 
-		// if is generated pdf don't show pdf button
+		if ( $this->remove_button() ) {
+
+			remove_shortcode( 'dkpdf-button' );
+			$content = str_replace( '[dkpdf-button]', '', $content );
+
+			return $content;
+		}
+
+		$button_position = get_option( 'dkpdf_pdfbutton_position', 'before' );
+		$content = $this->add_button_to_content( $button_position, $content );
+
+		return $content;
+	}
+
+	/**
+	 * Check if PDF button should be removed
+	 *
+	 * @return boolean
+	 */
+	public function remove_button() {
+
 		$pdf = get_query_var( 'pdf' );
-
-		if ( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
-
-			if ( $pdf
-			     || apply_filters( 'dkpdf_hide_button_equal',
-					$_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' ) ) {
-
-				remove_shortcode( 'dkpdf-button' );
-				$content = str_replace( "[dkpdf-button]", "", $content );
-
-				return $content;
-
-			}
-
-		} else {
-
-			if ( $pdf ) {
-
-				remove_shortcode( 'dkpdf-button' );
-				$content = str_replace( "[dkpdf-button]", "", $content );
-
-				return $content;
-
-			}
-
+		if ( $pdf ) {
+			return true;
 		}
 
 		global $post;
 		$post_type = get_post_type( $post->ID );
-
-		$option_post_types = sanitize_option( 'dkpdf_pdfbutton_post_types',
-			get_option( 'dkpdf_pdfbutton_post_types', array() ) );
+		if ( ! in_array( $post_type, get_option( 'dkpdf_pdfbutton_post_types' ), true ) ) {
+			return true;
+		}
 
 		if ( is_archive() || is_front_page() || is_home() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Add PDF button to content.
+	 *
+	 * @param string $button_position Button position.
+	 * @param string $content Post content.
+	 *
+	 * @return string
+	 */
+	public function add_button_to_content( $button_position, $content ) {
+
+		if ( 'shortcode' === $button_position ) {
 			return $content;
 		}
 
-		// return content if not checked
-		if ( $option_post_types ) {
+		$output = $content;
 
-			if ( ! in_array( get_post_type( $post ), $option_post_types ) ) {
+		if ( 'before' === $button_position ) {
 
-				return $content;
+			ob_start();
+			$this->template->get_template_part( 'dkpdf-button' );
 
-			}
+			return ob_get_clean() . $output;
 
-		}
+		} elseif ( 'after' === $button_position ) {
 
-		if ( $option_post_types ) {
+			ob_start();
+			$this->template->get_template_part( 'dkpdf-button' );
 
-			if ( in_array( get_post_type( $post ), $option_post_types ) ) {
+			return $output . ob_get_clean();
 
-				$c = $content;
-
-				$pdfbutton_position = sanitize_option( 'dkpdf_pdfbutton_position',
-					get_option( 'dkpdf_pdfbutton_position', 'before' ) );
-
-				if ( $pdfbutton_position ) {
-
-					if ( $pdfbutton_position == 'shortcode' ) {
-						return $c;
-					}
-
-					if ( $pdfbutton_position == 'before' ) {
-
-						ob_start();
-
-						$content = $this->template->get_template_part( 'dkpdf-button' );
-
-						return ob_get_clean() . $c;
-
-					} else if ( $pdfbutton_position == 'after' ) {
-
-						ob_start();
-
-						$content = $this->template->get_template_part( 'dkpdf-button' );
-
-						return $c . ob_get_clean();
-					}
-				}
-			}
 		} else {
-
 			return $content;
 		}
 	}
