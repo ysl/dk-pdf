@@ -26,7 +26,7 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 			->justReturn( 'pdf' );
 
 		$template = $this->createMock( TemplateLoader::class );
-		$display = new Display( $template );
+		$display  = new Display( $template );
 
 		$this->assertTrue( $display->remove_button() );
 	}
@@ -36,15 +36,16 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 		\Brain\Monkey\Functions\when( 'get_query_var' )
 			->justReturn( null );
 
-/*
-\Brain\Monkey\Functions\when('get_post')
-->justReturn((object)array(
-'ID' => 12
-));
-*/
+		/*
+		\Brain\Monkey\Functions\when('get_post')
+		->justReturn((object)array(
+		'ID' => 12
+		));
+		*/
 
 		global $post;
-		$post = new class {
+		$post     = new class {
+
 			public $ID;
 		};
 		$post->ID = 1;
@@ -53,7 +54,7 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 			->justReturn( 'post' );
 
 		\Brain\Monkey\Functions\when( 'get_option' )
-			->justReturn( array('post') );
+			->justReturn( array( 'post' ) );
 
 		\Brain\Monkey\Functions\when( 'is_archive' )
 			->justReturn( false );
@@ -62,16 +63,8 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 		\Brain\Monkey\Functions\when( 'is_home' )
 			->justReturn( false );
 
-
-		/*
-		// TODO Fix test.
-		$this->markTestIncomplete(
-			'Error: Call to undefined function Dinamiko\DKPDF\PDF\get_post_type()'
-		);
-		*/
-
 		$template = $this->createMock( TemplateLoader::class );
-		$display = new Display( $template );
+		$display  = new Display( $template );
 
 		$this->assertFalse( $display->remove_button() );
 	}

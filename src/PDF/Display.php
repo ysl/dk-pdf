@@ -12,6 +12,11 @@ class Display {
 	private $template;
 
 	/**
+	 * @var \mPDF
+	 */
+	private $mpdf;
+
+	/**
 	 * Constructor. Sets up the properties.
 	 *
 	 * @param TemplateLoader $template
@@ -29,9 +34,9 @@ class Display {
 	}
 
 	/**
-	 * Displays pdf button
+	 * Displays PDF button.
 	 *
-	 * @param string $content
+	 * @param $content
 	 *
 	 * @return mixed|string
 	 */
@@ -46,19 +51,19 @@ class Display {
 		}
 
 		$button_position = get_option( 'dkpdf_pdfbutton_position', 'before' );
-		$content = $this->add_button_to_content( $button_position, $content );
+		$content         = $this->add_button_to_content( $button_position, $content );
 
 		return $content;
 	}
 
 	/**
-	 * Check if PDF button should be removed
+	 * Check if PDF button should be removed.
 	 *
 	 * @return boolean
 	 */
 	public function remove_button() {
 
-		$pdf = get_query_var( 'pdf' );
+		$pdf = (string) get_query_var( 'pdf' );
 		if ( $pdf ) {
 			return true;
 		}
@@ -80,7 +85,7 @@ class Display {
 	 * Add PDF button to content.
 	 *
 	 * @param string $button_position Button position.
-	 * @param string $content Post content.
+	 * @param string $content         Post content.
 	 *
 	 * @return string
 	 */
@@ -112,104 +117,82 @@ class Display {
 	}
 
 	/**
-	 * output the pdf
+	 * Output the PDF.
 	 */
-	public function dkpdf_output_pdf( $query ) {
+	public function dkpdf_output_pdf() {
 
-		$pdf = sanitize_text_field( get_query_var( 'pdf' ) );
-
+		$pdf = (string) get_query_var( 'pdf' );
 		if ( $pdf ) {
 
-			require_once DKPDF_PLUGIN_DIR . '/vendor/autoload.php';
+			$config = [
+				'tempDir'           => apply_filters( 'dkpdf_pdf_temp_dir', DKPDF_PLUGIN_DIR . '/tmp' ),
+				'default_font_size' => get_option( 'dkpdf_font_size', '12' ),
+				'format'            => get_option( 'dkpdf_page_orientation', 'vertical' ) === 'horizontal' ? 'A4-L' : 'A4',
+				'margin_left'       => get_option( 'dkpdf_margin_left', '15' ),
+				'margin_right'      => get_option( 'dkpdf_margin_right', '15' ),
+				'margin_top'        => get_option( 'dkpdf_margin_top', '50' ),
+				'margin_bottom'     => get_option( 'dkpdf_margin_bottom', '30' ),
+				'margin_header'     => get_option( 'dkpdf_margin_header', '15' ),
+			];
 
-			// font size
-			$dkpdf_font_size = get_option( 'dkpdf_font_size', '12' );
+			$this->mpdf = new \Mpdf\Mpdf( apply_filters( 'dkpdf_pdf_config', $config ) );
 
-			// page orientation
-			$dkpdf_page_orientation = get_option( 'dkpdf_page_orientation', 'vertical' );
-			if ( $dkpdf_page_orientation == 'horizontal' ) {
-				$format = apply_filters( 'dkpdf_pdf_format', 'A4' ) . '-L';
-			} else {
-				$format = apply_filters( 'dkpdf_pdf_format', 'A4' );
-			}
+			$this->pdf_setup();
 
-			// margins
-			$dkpdf_margin_left   = get_option( 'dkpdf_margin_left', '15' );
-			$dkpdf_margin_right  = get_option( 'dkpdf_margin_right', '15' );
-			$dkpdf_margin_top    = get_option( 'dkpdf_margin_top', '50' );
-			$dkpdf_margin_bottom = get_option( 'dkpdf_margin_bottom', '30' );
-			$dkpdf_margin_header = get_option( 'dkpdf_margin_header', '15' );
+			$this->pdf_display();
 
-			$mpdf = new \Mpdf\Mpdf( [
-				'tempDir'           => DKPDF_PLUGIN_DIR . '/tmp',
-				'default_font_size' => $dkpdf_font_size,
-				'format'            => $format,
-				'margin_left'       => $dkpdf_margin_left,
-				'margin_right'      => $dkpdf_margin_right,
-				'margin_top'        => $dkpdf_margin_top,
-				'margin_bottom'     => $dkpdf_margin_bottom,
-				'margin_header'     => $dkpdf_margin_header,
-			] );
-
-			// encrypts and sets the PDF document permissions
-			// https://mpdf.github.io/reference/mpdf-functions/setprotection.html
-			$enable_protection = get_option( 'dkpdf_enable_protection' );
-
-			if ( $enable_protection == 'on' ) {
-				$grant_permissions = get_option( 'dkpdf_grant_permissions' );
-				$mpdf->SetProtection( $grant_permissions );
-			}
-
-			// keep columns
-			$keep_columns = get_option( 'dkpdf_keep_columns' );
-
-			if ( $keep_columns == 'on' ) {
-				$mpdf->keepColumns = true;
-			}
-
-			/*
-			// make chinese characters work in the pdf
-			$mpdf->useAdobeCJK = true;
-			$mpdf->autoScriptToLang = true;
-			$mpdf->autoLangToFont = true;
-			*/
-
-			// header
-			$pdf_header_html = $this->dkpdf_get_template( 'dkpdf-header' );
-			$mpdf->SetHTMLHeader( $pdf_header_html );
-
-			// footer
-			$pdf_footer_html = $this->dkpdf_get_template( 'dkpdf-footer' );
-			$mpdf->SetHTMLFooter( $pdf_footer_html );
-
-			$mpdf->WriteHTML( apply_filters( 'dkpdf_before_content', '' ) );
-			$mpdf->WriteHTML( $this->dkpdf_get_template( 'dkpdf-index' ) );
-			$mpdf->WriteHTML( apply_filters( 'dkpdf_after_content', '' ) );
-
-			// action to do (open or download)
-			$pdfbutton_action = sanitize_option( 'dkpdf_pdfbutton_action',
-				get_option( 'dkpdf_pdfbutton_action', 'open' ) );
-
-			global $post;
-			$title = apply_filters( 'dkpdf_pdf_filename', get_the_title( $post->ID ) );
-
-			$mpdf->SetTitle( $title );
-			$mpdf->SetAuthor( apply_filters( 'dkpdf_pdf_author', get_bloginfo( 'name' ) ) );
-
-			if ( $pdfbutton_action == 'open' ) {
-
-				$mpdf->Output( $title . '.pdf', 'I' );
-
-			} else {
-
-				$mpdf->Output( $title . '.pdf', 'D' );
-
-			}
+			$this->pdf_output();
 
 			exit;
-
 		}
 
+	}
+
+	public function pdf_setup() {
+
+		if ( 'on' === get_option( 'dkpdf_enable_protection' ) ) {
+
+			$grant_permissions = get_option( 'dkpdf_grant_permissions' );
+			$this->mpdf->SetProtection( $grant_permissions );
+		}
+
+		if ( 'on' ===  get_option( 'dkpdf_keep_columns' ) ) {
+
+			$this->mpdf->keepColumns = true;
+		}
+
+		// make chinese characters work in the pdf
+		//$mpdf->useAdobeCJK = true;
+		//$mpdf->autoScriptToLang = true;
+		//$mpdf->autoLangToFont = true;
+	}
+
+	public function pdf_display() {
+
+		$pdf_header_html = $this->dkpdf_get_template( 'dkpdf-header' );
+		$this->mpdf->SetHTMLHeader( $pdf_header_html );
+
+		$pdf_footer_html = $this->dkpdf_get_template( 'dkpdf-footer' );
+		$this->mpdf->SetHTMLFooter( $pdf_footer_html );
+
+		$this->mpdf->WriteHTML( apply_filters( 'dkpdf_before_content', '' ) );
+		$this->mpdf->WriteHTML( $this->dkpdf_get_template( 'dkpdf-index' ) );
+		$this->mpdf->WriteHTML( apply_filters( 'dkpdf_after_content', '' ) );
+	}
+
+	public function pdf_output() {
+
+		global $post;
+		$title = apply_filters( 'dkpdf_pdf_filename', get_the_title( $post->ID ) );
+		$this->mpdf->SetTitle( $title );
+		$this->mpdf->SetAuthor( apply_filters( 'dkpdf_pdf_author', get_bloginfo( 'name' ) ) );
+
+		$pdfbutton_action = (string) get_option( 'dkpdf_pdfbutton_action', 'open' );
+		if ( 'open' === $pdfbutton_action ) {
+			$this->mpdf->Output( $title . '.pdf', 'I' );
+		} else {
+			$this->mpdf->Output( $title . '.pdf', 'D' );
+		}
 	}
 
 	/**
