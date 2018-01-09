@@ -1,4 +1,5 @@
 <?php
+namespace Dinamiko\DKPDF;
 
 if ( ! defined( 'DKPDF_PLUGIN_DIR' ) ) {
 	define( 'DKPDF_PLUGIN_DIR', rtrim( dirname( dirname( __DIR__ ) ), '/' ) );

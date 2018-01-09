@@ -1,24 +1,11 @@
 <?php # -*- coding: utf-8 -*-
+namespace Dinamiko\DKPDF\Tests\PDF;
 
-namespace Dinamiko\DKPDF\Tests\Display;
-
+use Brain\Monkey;
 use Dinamiko\DKPDF\Common\TemplateLoader;
 use Dinamiko\DKPDF\PDF\Display;
-use Brain\Monkey;
 
 class Display_Test extends \PHPUnit\Framework\TestCase {
-
-	protected function setUp() {
-
-		parent::setUp();
-		Monkey\setUp();
-	}
-
-	protected function tearDown() {
-
-		Monkey\tearDown();
-		parent::tearDown();
-	}
 
 	public function test_remove_button_true() {
 
@@ -36,13 +23,6 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 		\Brain\Monkey\Functions\when( 'get_query_var' )
 			->justReturn( null );
 
-		/*
-		\Brain\Monkey\Functions\when('get_post')
-		->justReturn((object)array(
-		'ID' => 12
-		));
-		*/
-
 		global $post;
 		$post     = new class {
 
@@ -52,7 +32,6 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 
 		\Brain\Monkey\Functions\when( 'get_post_type' )
 			->justReturn( 'post' );
-
 		\Brain\Monkey\Functions\when( 'get_option' )
 			->justReturn( array( 'post' ) );
 
@@ -67,5 +46,17 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 		$display  = new Display( $template );
 
 		$this->assertFalse( $display->remove_button() );
+	}
+
+	protected function setUp() {
+
+		parent::setUp();
+		Monkey\setUp();
+	}
+
+	protected function tearDown() {
+
+		Monkey\tearDown();
+		parent::tearDown();
 	}
 }

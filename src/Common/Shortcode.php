@@ -53,9 +53,12 @@ class Shortcode {
 		$atts = shortcode_atts( array(
 			'tag' => '',
 		), $atts );
-		$pdf  = get_query_var( 'pdf' );
-		$tag  = sanitize_text_field( $atts['tag'] );
+
+		$pdf = get_query_var( 'pdf' );
+
+		$tag = sanitize_text_field( $atts['tag'] );
 		if ( $tag !== '' && $pdf ) {
+
 			remove_shortcode( $tag );
 			add_shortcode( $tag, '__return_false' );
 
@@ -69,40 +72,16 @@ class Shortcode {
 
 	/**
 	 * [dkpdf-pagebreak]
-	 * Allows adding page breaks for sending content after this shortcode to the next page.
-	 * Uses <pagebreak /> http://mpdf1.com/manual/index.php?tid=108
+	 * Content after this shortcode goes to the next page.
 	 *
 	 * @return string
 	 */
-	public function dkpdf_pagebreak_shortcode( $atts, $content = null ) {
+	public function pagebreak() {
 
 		$pdf = get_query_var( 'pdf' );
-
-		if ( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
-			if ( $pdf
-			     || apply_filters( 'dkpdf_hide_button_equal',
-					$_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' ) ) {
-
-				$output = '<pagebreak />';
-
-			} else {
-
-				$output = '';
-			}
-
-		} else {
-
-			if ( $pdf ) {
-
-				$output = '<pagebreak />';
-
-			} else {
-
-				$output = '';
-			}
+		if ( $pdf ) {
+			return '<pagebreak />';
 		}
-
-		return $output;
 	}
 
 	/**
