@@ -41,10 +41,11 @@ class MetaBox {
 
 		global $post, $messages;
 
-		if ( isset( $_POST[ 'dkpdf' . '_nonce' ] ) ) {
+		if ( isset( $_POST[ 'dkpdf_nonce' ] ) ) {
 
 			// Verify nonce
-			if ( ! wp_verify_nonce( $_POST[ 'dkpdf' . '_nonce' ], plugin_basename( __FILE__ ) ) ) {
+			if ( ! wp_verify_nonce( filter_var( wp_unslash( $_POST['dkpdf_nonce'] ), FILTER_SANITIZE_STRING ),
+				plugin_basename( __FILE__ ) ) ) {
 				return $post_id;
 			}
 
@@ -68,7 +69,7 @@ class MetaBox {
 			${$f} = '';
 
 			if ( isset( $_POST[ $f ] ) ) {
-				${$f} = strip_tags( trim( $_POST[ $f ] ) );
+				${$f} = strip_tags( trim( filter_var( wp_unslash( $_POST[ $f ] ), FILTER_SANITIZE_STRING) ) );
 			}
 
 			// Escape the URLs.
@@ -125,11 +126,36 @@ class MetaBox {
 
 			$html .= '</tbody>' . "\n";
 			$html .= '</table>' . "\n";
-
 		}
 
-		echo $html;
+		$allowed_html = array(
+			'input' => array(
+				'type'  => array(),
+				'name'  => array(),
+				'id'    => array(),
+				'value' => array(),
+				'checked' => array(),
+			),
+			'table' => array(
+				'class' => array(),
+			),
+			'tbody' => array(),
+			'tr'    => array(
+				'valign' => array(),
+			),
+			'td'    => array(),
+			'th'    => array(
+				'scope' => array(),
+			),
+			'label' => array(
+				'for' => array(),
+			),
+			'span'  => array(
+				'class' => array(),
+			),
+		);
 
+		echo wp_kses( $html, $allowed_html );
 	}
 
 	/**

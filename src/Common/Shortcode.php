@@ -45,19 +45,22 @@ class Shortcode {
 	/**
 	 * [dkpdf-remove tag="gallery"]content to remove[/dkpdf-remove]
 	 * This shortcode is used remove pieces of content in the generated PDF
+	 *
 	 * @return string
 	 */
 	public function dkpdf_remove_shortcode( $atts, $content = null ) {
+
 		$atts = shortcode_atts( array(
-			'tag' => ''
+			'tag' => '',
 		), $atts );
-		$pdf = get_query_var( 'pdf' );
-		$tag = sanitize_text_field( $atts['tag'] );
-		if( $tag !== '' && $pdf )  {
+		$pdf  = get_query_var( 'pdf' );
+		$tag  = sanitize_text_field( $atts['tag'] );
+		if ( $tag !== '' && $pdf ) {
 			remove_shortcode( $tag );
 			add_shortcode( $tag, '__return_false' );
+
 			return do_shortcode( $content );
-		} else if( $pdf ) {
+		} else if ( $pdf ) {
 			return '';
 		}
 
@@ -68,14 +71,17 @@ class Shortcode {
 	 * [dkpdf-pagebreak]
 	 * Allows adding page breaks for sending content after this shortcode to the next page.
 	 * Uses <pagebreak /> http://mpdf1.com/manual/index.php?tid=108
+	 *
 	 * @return string
 	 */
 	public function dkpdf_pagebreak_shortcode( $atts, $content = null ) {
 
 		$pdf = get_query_var( 'pdf' );
 
-		if( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
-			if ( $pdf || apply_filters( 'dkpdf_hide_button_equal', $_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' )  ) {
+		if ( apply_filters( 'dkpdf_hide_button_isset', isset( $_POST['dkpdfg_action_create'] ) ) ) {
+			if ( $pdf
+			     || apply_filters( 'dkpdf_hide_button_equal',
+					$_POST['dkpdfg_action_create'] == 'dkpdfg_action_create' ) ) {
 
 				$output = '<pagebreak />';
 
@@ -86,7 +92,7 @@ class Shortcode {
 
 		} else {
 
-			if( $pdf ) {
+			if ( $pdf ) {
 
 				$output = '<pagebreak />';
 
@@ -114,33 +120,37 @@ class Shortcode {
 	public function dkpdf_columns_shortcode( $atts, $content = null ) {
 
 		$atts = shortcode_atts( array(
-			'columns' => '2',
+			'columns'       => '2',
 			'equal-columns' => 'false',
-			'gap' => '10'
+			'gap'           => '10',
 		), $atts );
 
 		$pdf = get_query_var( 'pdf' );
 
-		if( $pdf ) {
-			$columns = sanitize_text_field( $atts['columns'] );
+		if ( $pdf ) {
+			$columns       = sanitize_text_field( $atts['columns'] );
 			$equal_columns = sanitize_text_field( $atts['equal-columns'] );
-			$vAlign = $equal_columns == 'true' ? 'vAlign="justify"' : '';
-			$gap = sanitize_text_field( $atts['gap'] );
-			return '<columns column-count="'.$columns.'" '.$vAlign.' column-gap="'.$gap.'" />'.do_shortcode( $content ).'<columns column-count="1">';
+			$vAlign        = $equal_columns == 'true' ? 'vAlign="justify"' : '';
+			$gap           = sanitize_text_field( $atts['gap'] );
+
+			return '<columns column-count="' . $columns . '" ' . $vAlign . ' column-gap="' . $gap . '" />' . do_shortcode( $content ) . '<columns column-count="1">';
 		} else {
 			remove_shortcode( 'dkpdf-columnbreak' );
 			add_shortcode( 'dkpdf-columnbreak', '__return_false' );
+
 			return do_shortcode( $content );
 		}
 	}
 
 	/**
 	 * [dkpdf-columnbreak] forces a new column
+	 *
 	 * @uses <columnbreak />
 	 */
 	public function dkpdf_columnbreak_shortcode( $atts, $content = null ) {
+
 		$pdf = get_query_var( 'pdf' );
-		if( $pdf ) {
+		if ( $pdf ) {
 			return '<columnbreak />';
 		}
 	}

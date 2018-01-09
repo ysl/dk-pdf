@@ -45,7 +45,7 @@ class AssetManager {
 
 	public function dkpdf_admin_enqueue_styles( $hook ) {
 
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'dkpdf_settings' ) {
+ 		if ( isset( $hook ) && $hook === 'toplevel_page_dkpdf_settings' ) {
 			wp_register_style(
 				'dkpdf-admin',
 				plugins_url( 'dk-pdf/assets/css/admin.css' ),
@@ -58,7 +58,7 @@ class AssetManager {
 
 	public function dkpdf_admin_enqueue_scripts( $hook ) {
 
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'dkpdf_settings' ) {
+		if ( isset( $hook ) && $hook === 'toplevel_page_dkpdf_settings' ) {
 
 			wp_register_script(
 				'dkpdf-settings-admin',

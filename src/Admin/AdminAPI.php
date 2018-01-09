@@ -116,7 +116,7 @@ class AdminAPI {
 				foreach ( $field['options'] as $k => $v ) {
 					$checked = false;
 					if ( $data == false ) { $data = array(); }
-					if ( in_array( $k, $data ) ) {
+					if ( in_array( $k, $data, true ) ) {
 						$checked = true;
 					}
 					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '" class="checkbox_multi"><input type="checkbox" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
@@ -149,7 +149,7 @@ class AdminAPI {
 				$html .= '<select name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple="multiple">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, $data ) ) {
+					if ( in_array( $k, $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -269,7 +269,7 @@ class AdminAPI {
 				$field['metabox'] = array( $field['metabox'] );
 			}
 
-			if ( in_array( $args['id'], $field['metabox'] ) ) {
+			if ( in_array( $args['id'], $field['metabox'], true ) ) {
 				$this->display_meta_box_field( $field, $post );
 			}
 

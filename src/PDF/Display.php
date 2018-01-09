@@ -211,7 +211,7 @@ class Display {
 	}
 
 	/**
-	 * Returns an array of active post, page, attachment and custom post types.
+	 * Returns an array of active post types.
 	 *
 	 * @return array
 	 */
