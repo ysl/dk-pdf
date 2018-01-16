@@ -2,7 +2,7 @@
 
 namespace Dinamiko\DKPDF;
 
-use Dinamiko\DKPDF\Admin\AdminAPI;
+use Dinamiko\DKPDF\Admin\Fields;
 use Dinamiko\DKPDF\Admin\Settings;
 use Dinamiko\DKPDF\Common\MetaBox;
 use Dinamiko\DKPDF\Common\AssetManager;
@@ -16,7 +16,7 @@ class DKPDF {
 
 		if ( is_admin() ) {
 
-			$admin = new AdminAPI();
+			$admin = new Fields();
 			( new Settings( $admin ) );
 
 			( new MetaBox() )->init();

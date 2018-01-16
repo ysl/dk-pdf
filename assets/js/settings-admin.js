@@ -1,27 +1,6 @@
 jQuery(document).ready(function($) {
 
-    /***** Colour picker *****/
-    $('.colorpicker').hide();
-    $('.colorpicker').each( function() {
-        if( jQuery().farbtastic ) {
-            $(this).farbtastic( $(this).closest('.color-picker').find('.color') );
-        }
-    });
-
-    $('.color').click(function() {
-        $(this).closest('.color-picker').find('.colorpicker').fadeIn();
-    });
-
-    $(document).mousedown(function() {
-        $('.colorpicker').each(function() {
-            var display = $(this).css('display');
-            if ( display == 'block' )
-                $(this).fadeOut();
-        });
-    });
-
     /***** Uploading images *****/
-
     var file_frame;
 
     jQuery.fn.uploadMediaFile = function( button, preview_media ) {
