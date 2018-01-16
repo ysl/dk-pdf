@@ -463,8 +463,14 @@ class Settings {
 					register_setting( 'dkpdf_settings', $option_name, $validation );
 
 					// Add field to page
-					add_settings_field( $field['id'], $field['label'], array( $this->fields, 'display_field' ),
-						'dkpdf_settings', $section, array( 'field' => $field, 'prefix' => 'dkpdf_' ) );
+					add_settings_field(
+						$field['id'],
+						$field['label'],
+						array( $this->fields, 'display_field' ),
+						'dkpdf_settings',
+						$section,
+						array( 'field' => $field, 'prefix' => 'dkpdf_' )
+					);
 				}
 
 				if ( ! $current_section ) {
