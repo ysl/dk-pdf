@@ -16,8 +16,8 @@ class DKPDF {
 
 		if ( is_admin() ) {
 
-			$admin = new Fields();
-			( new Settings( $admin ) );
+			$fields = new Fields();
+			( new Settings( $fields ) );
 
 			( new MetaBox() )->init();
 		}

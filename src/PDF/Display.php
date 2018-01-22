@@ -28,19 +28,21 @@ class Display {
 
 	public function init() {
 
-		add_filter( 'the_content', array( $this, 'dkpdf_display_pdf_button' ) );
-		add_action( 'wp', array( $this, 'dkpdf_output_pdf' ) );
-		add_filter( 'query_vars', array( $this, 'dkpdf_set_query_vars' ) );
+		add_filter( 'the_content', array( $this, 'display_pdf_button' ) );
+		add_action( 'wp', array( $this, 'create_pdf' ) );
+		add_filter( 'query_vars', array( $this, 'set_query_vars' ) );
 	}
 
 	/**
 	 * Displays PDF button.
 	 *
+	 * @wp-hook the_content
+	 *
 	 * @param $content
 	 *
 	 * @return mixed|string
 	 */
-	public function dkpdf_display_pdf_button( $content ) {
+	public function display_pdf_button( $content ) {
 
 		if ( $this->remove_button() ) {
 
@@ -117,9 +119,13 @@ class Display {
 	}
 
 	/**
-	 * Output the PDF.
+	 * Creates the PDF.
+	 *
+	 * @wp-hook wp
+	 *
+	 * @return void
 	 */
-	public function dkpdf_output_pdf() {
+	public function create_pdf() {
 
 		$pdf = (string) get_query_var( 'pdf' );
 		if ( $pdf ) {
@@ -211,40 +217,15 @@ class Display {
 	}
 
 	/**
-	 * Returns an array of active post types.
-	 *
-	 * @return array
-	 */
-	function dkpdf_get_post_types() {
-
-		$args = array(
-			'public'   => true,
-			'_builtin' => false,
-		);
-
-		$post_types = get_post_types( $args );
-		$post_arr   = array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment' );
-
-		foreach ( $post_types as $post_type ) {
-
-			$arr      = array( $post_type => $post_type );
-			$post_arr += $arr;
-
-		}
-
-		$post_arr = apply_filters( 'dkpdf' . '_posts_arr', $post_arr );
-
-		return $post_arr;
-	}
-
-	/**
 	 * Set query_vars
+	 *
+	 * @wp-hook query_vars
 	 *
 	 * @param array $query_vars
 	 *
 	 * @return array
 	 */
-	public function dkpdf_set_query_vars( $query_vars ) {
+	public function set_query_vars( $query_vars ) {
 
 		$query_vars[] = 'pdf';
 

@@ -2,6 +2,8 @@
 
 namespace Dinamiko\DKPDF\Admin;
 
+use Dinamiko\DKPDF\Common\Utils;
+
 class Settings {
 
 	/**
@@ -35,34 +37,6 @@ class Settings {
 		// Add settings link to plugins page
 		add_filter( 'plugin_action_links_' . plugin_basename( DKPDF_PLUGIN_FILE ),
 			array( $this, 'add_settings_link' ) );
-	}
-
-	/**
-	 * returns an array of active post, page, attachment and custom post types
-	 *
-	 * @return array
-	 */
-	public function dkpdf_get_post_types() {
-
-		$args = array(
-			'public'   => true,
-			'_builtin' => false,
-		);
-
-		$post_types = get_post_types( $args );
-		$post_arr   = array( 'post' => 'post', 'page' => 'page', 'attachment' => 'attachment' );
-
-		foreach ( $post_types as $post_type ) {
-
-			$arr      = array( $post_type => $post_type );
-			$post_arr += $arr;
-
-		}
-
-		$post_arr = apply_filters( 'dkpdf_posts_arr', $post_arr );
-
-		return $post_arr;
-
 	}
 
 	/**
@@ -187,8 +161,6 @@ class Settings {
 	 */
 	private function settings_fields() {
 
-		$post_types_arr = $this->dkpdf_get_post_types();
-
 		// pdf button settings
 		$settings['pdfbtn'] = array(
 			'title'       => __( 'PDF Button', 'dkpdf' ),
@@ -207,7 +179,7 @@ class Settings {
 					'label'       => __( 'Post types to apply:', 'dkpdf' ),
 					'description' => '',
 					'type'        => 'checkbox_multi',
-					'options'     => $post_types_arr,
+					'options'     => Utils::get_post_types(),
 					'default'     => array(),
 				),
 				array(
