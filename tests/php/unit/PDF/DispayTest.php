@@ -1,11 +1,11 @@
 <?php # -*- coding: utf-8 -*-
 namespace Dinamiko\DKPDF\Tests\PDF;
 
-use Brain\Monkey;
-use Dinamiko\DKPDF\Common\TemplateLoader;
+use Dinamiko\DKPDF\TemplateLoader;
 use Dinamiko\DKPDF\PDF\Display;
+use Dinamiko\DKPDF\Tests\Unit\TestCase;
 
-class Display_Test extends \PHPUnit\Framework\TestCase {
+class Display_Test extends TestCase {
 
 	public function test_remove_button_true() {
 
@@ -46,17 +46,5 @@ class Display_Test extends \PHPUnit\Framework\TestCase {
 		$display  = new Display( $template );
 
 		$this->assertFalse( $display->remove_button() );
-	}
-
-	protected function setUp() {
-
-		parent::setUp();
-		Monkey\setUp();
-	}
-
-	protected function tearDown() {
-
-		Monkey\tearDown();
-		parent::tearDown();
 	}
 }
