@@ -6,7 +6,8 @@
  * Description: WordPress to PDF made easy.
  * Author: Emili Castells
  * Author URI: http://www.dinamiko.com
- * Tested up to: 4.8
+ * Tested up to: 4.9
+ * Requires at least: 4.9
  * License: MIT
  * Text Domain: dkpdf
  * Domain Path: /languages/

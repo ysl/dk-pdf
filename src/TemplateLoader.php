@@ -6,60 +6,92 @@ namespace Dinamiko\DKPDF;
 class TemplateLoader
 {
 
-    protected $filter_prefix = 'dkpdf';
-    protected $theme_template_directory = 'dkpdf';
-    protected $plugin_directory = DKPDF_PLUGIN_DIR;
-    protected $plugin_template_directory = 'templates';
+    /**
+     * @var string
+     */
+    protected $filterPrefix = 'dkpdf';
 
-    public function get_template_part($slug, $name = null, $load = true)
+    /**
+     * @var string
+     */
+    protected $themeTemplateDirectory = 'dkpdf';
+
+    /**
+     * @var string
+     */
+    protected $pluginDirectory = DKPDF_PLUGIN_DIR;
+
+    /**
+     * @var string
+     */
+    protected $pluginTemplateDirectory = 'templates';
+
+    /**
+     * Get template part.
+     * @param string $slug
+     * @param string $name
+     * @param bool $load
+     * @return bool|string
+     */
+    public function templatePart(string $slug, string $name = '', bool $load = true)
     {
-
-        // Execute code for this part
         do_action('get_template_part_' . $slug, $slug, $name);
 
-        $templates = $this->get_template_file_names($slug, $name);
+        $templates = $this->templateFileNames($slug, $name);
 
-        return $this->locate_template($templates, $load, false);
+        return $this->locateTemplate($templates, $load, false);
     }
 
-    protected function get_template_file_names($slug, $name)
+    /**
+     * Get template file names.
+     * @param string $slug
+     * @param string $name
+     * @return array
+     */
+    protected function templateFileNames(string $slug, string $name)
     {
-
-        $templates = array();
+        $templates = [];
 
         if (isset($name)) {
-
             $templates[] = $slug . '-' . $name . '.php';
-
         }
 
         $templates[] = $slug . '.php';
 
-        return apply_filters($this->filter_prefix . '_get_template_part', $templates, $slug, $name);
+        return apply_filters($this->filterPrefix . '_get_template_part', $templates, $slug, $name);
     }
 
-    public function locate_template($template_names, $load = false, $require_once = true)
+    /**
+     * Locate template.
+     * @param array $templateNames
+     * @param bool $load
+     * @param bool $requireOnce
+     * @return bool|string
+     */
+    public function locateTemplate(
+        array $templateNames,
+        bool $load = false,
+        bool $requireOnce = true
+    )
     {
-
-        // No file found yet
         $located = false;
 
         // Remove empty entries
-        $template_names = array_filter((array)$template_names);
-        $template_paths = $this->get_template_paths();
+        $templateNames = array_filter((array)$templateNames);
+        $templatePaths = $this->getTemplatePaths();
 
         // Try to find a template file
-        foreach ($template_names as $template_name) {
+        foreach ($templateNames as $templateName) {
 
             // Trim off any slashes from the template name
-            $template_name = ltrim($template_name, '/');
+            $templateName = ltrim($templateName, '/');
 
             // Try locating this template file by looping through the template paths
-            foreach ($template_paths as $template_path) {
+            foreach ($templatePaths as $template_path) {
 
-                if (file_exists($template_path . $template_name)) {
+                if (file_exists($template_path . $templateName)) {
 
-                    $located = $template_path . $template_name;
+                    $located = $template_path . $templateName;
                     break 2;
 
                 }
@@ -68,41 +100,44 @@ class TemplateLoader
         }
 
         if ($load && $located) {
-
-            load_template($located, $require_once);
+            load_template($located, $requireOnce);
         }
 
         return $located;
     }
 
-    protected function get_template_paths()
+    /**
+     * Get template paths.
+     * @return array
+     */
+    protected function getTemplatePaths(): array
     {
+        $themeDirectory = trailingslashit($this->themeTemplateDirectory);
 
-        $theme_directory = trailingslashit($this->theme_template_directory);
-
-        $file_paths = array(
-            10 => trailingslashit(get_template_directory()) . $theme_directory,
-            100 => $this->get_templates_dir(),
-        );
+        $filePaths = [
+            10 => trailingslashit(get_template_directory()) . $themeDirectory,
+            100 => $this->getTemplatesDir(),
+        ];
 
         // Only add this conditionally, so non-child themes don't redundantly check active theme twice.
         if (is_child_theme()) {
-
-            $file_paths[1] = trailingslashit(get_stylesheet_directory()) . $theme_directory;
-
+            $filePaths[1] = trailingslashit(get_stylesheet_directory()) . $themeDirectory;
         }
 
-        $file_paths = apply_filters($this->filter_prefix . '_template_paths', $file_paths);
+        $filePaths = apply_filters($this->filterPrefix . '_template_paths', $filePaths);
 
         // sort the file paths based on priority
-        ksort($file_paths, SORT_NUMERIC);
+        ksort($filePaths, SORT_NUMERIC);
 
-        return array_map('trailingslashit', $file_paths);
+        return array_map('trailingslashit', $filePaths);
     }
 
-    protected function get_templates_dir()
+    /**
+     * Get templates directory.
+     * @return string
+     */
+    protected function getTemplatesDir(): string
     {
-
-        return trailingslashit($this->plugin_directory) . $this->plugin_template_directory;
+        return trailingslashit($this->pluginDirectory) . $this->pluginTemplateDirectory;
     }
 }

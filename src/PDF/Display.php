@@ -109,14 +109,14 @@ class Display
         if ('before' === $button_position) {
 
             ob_start();
-            $this->template->get_template_part('dkpdf-button');
+            $this->template->templatePart('dkpdf-button');
 
             return ob_get_clean() . $output;
 
         } elseif ('after' === $button_position) {
 
             ob_start();
-            $this->template->get_template_part('dkpdf-button');
+            $this->template->templatePart('dkpdf-button');
 
             return $output . ob_get_clean();
 
@@ -224,7 +224,7 @@ class Display
     {
 
         ob_start();
-        $this->template->get_template_part($template_name);
+        $this->template->templatePart($template_name);
 
         return ob_get_clean();
     }

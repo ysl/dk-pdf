@@ -42,7 +42,7 @@ class Shortcode
 
         ob_start();
 
-        $this->template->get_template_part('dkpdf-button');
+        $this->template->templatePart('dkpdf-button');
 
         return ob_get_clean();
     }
