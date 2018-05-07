@@ -17,6 +17,6 @@ class TemplateLoaderTest extends TestCase
         \Brain\Monkey\Functions\when('is_child_theme')
             ->justReturn(false);
 
-        $templateLoader->templatePart('', '');
+        $this->assertEquals('', $templateLoader->part('', ''));
     }
 }

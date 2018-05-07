@@ -29,52 +29,39 @@ class TemplateLoader
     /**
      * Get template part.
      * @param string $slug
-     * @param string $name
-     * @param bool $load
-     * @return bool|string
+     * @return string
      */
-    public function templatePart(string $slug, string $name = '', bool $load = true)
+    public function part(string $slug): string
     {
-        do_action('get_template_part_' . $slug, $slug, $name);
+        do_action('get_template_part_' . $slug, $slug);
 
-        $templates = $this->templateFileNames($slug, $name);
+        $templates = $this->templateFileNames($slug);
 
-        return $this->locateTemplate($templates, $load, false);
+        return $this->locateTemplate($templates);
     }
 
     /**
      * Get template file names.
      * @param string $slug
-     * @param string $name
      * @return array
      */
-    protected function templateFileNames(string $slug, string $name)
+    protected function templateFileNames(string $slug): array
     {
-        $templates = [];
-
-        if (isset($name)) {
-            $templates[] = $slug . '-' . $name . '.php';
-        }
-
         $templates[] = $slug . '.php';
 
-        return apply_filters($this->filterPrefix . '_get_template_part', $templates, $slug, $name);
+        return apply_filters($this->filterPrefix . '_get_template_part', $templates, $slug);
     }
 
     /**
      * Locate template.
      * @param array $templateNames
-     * @param bool $load
-     * @param bool $requireOnce
-     * @return bool|string
+     * @return string
      */
     public function locateTemplate(
-        array $templateNames,
-        bool $load = false,
-        bool $requireOnce = true
-    )
-    {
-        $located = false;
+        array $templateNames
+    ): string {
+
+        $template = '';
 
         // Remove empty entries
         $templateNames = array_filter((array)$templateNames);
@@ -82,28 +69,23 @@ class TemplateLoader
 
         // Try to find a template file
         foreach ($templateNames as $templateName) {
-
             // Trim off any slashes from the template name
             $templateName = ltrim($templateName, '/');
 
             // Try locating this template file by looping through the template paths
-            foreach ($templatePaths as $template_path) {
-
-                if (file_exists($template_path . $templateName)) {
-
-                    $located = $template_path . $templateName;
+            foreach ($templatePaths as $templatePath) {
+                if (file_exists($templatePath . $templateName)) {
+                    $template = $templatePath . $templateName;
                     break 2;
-
                 }
-
             }
         }
 
-        if ($load && $located) {
-            load_template($located, $requireOnce);
+        if ($template) {
+            load_template($template);
         }
 
-        return $located;
+        return $template;
     }
 
     /**
@@ -126,7 +108,7 @@ class TemplateLoader
 
         $filePaths = apply_filters($this->filterPrefix . '_template_paths', $filePaths);
 
-        // sort the file paths based on priority
+        // Sort the file paths based on priority
         ksort($filePaths, SORT_NUMERIC);
 
         return array_map('trailingslashit', $filePaths);
