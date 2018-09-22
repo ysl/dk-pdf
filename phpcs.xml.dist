@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ruleset name="DKPDF Coding Standard">
+
+    <file>./inc</file>
+    <file>./dk-pdf.php</file>
+
+    <config name="text_domain" value="dkpdf"/>
+
+    <rule ref="Inpsyde"/>
+
+</ruleset>
