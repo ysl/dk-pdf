@@ -1,8 +1,52 @@
-vendor
-.DS_Store
-.idea
-node_modules
-*.zip
-package-lock.json
-composer.lock
+# mPDF
 tmp
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.php_cs.cache
+
+# PhpStorm
+.idea/
+
+# Composer
+/composer.lock
+/vendor/
+
+# NPM
+.npm
+node_modules/
+npm-debug.log*
+
+# CodeSniffer
+/phpcs.xml
+report-*.txt
+
+# PHPUnit
+/phpunit.xml
+coverage
+
+# Sass
+.sass-cache
+*.css.map
+
+# Generated files
+/*.zip
+.phan/*
+!.phan/config.php
+/autoload.php
+/languages/*.pot
+composer-setup.php
+
+# Codeception
+tests/codeception/_output/*
+tests/codeception/_data/*
+tests/codeception/tests/*.suite.yml
+
+# DotEnv
+.env
