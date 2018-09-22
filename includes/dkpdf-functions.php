@@ -136,6 +136,7 @@ function dkpdf_output_pdf( $query ) {
       $dkpdf_margin_top = get_option( 'dkpdf_margin_top', '50' );
       $dkpdf_margin_bottom = get_option( 'dkpdf_margin_bottom', '30' );
       $dkpdf_margin_header = get_option( 'dkpdf_margin_header', '15' );
+      $dkpdf_margin_footer = get_option( 'dkpdf_margin_footer', '15' );
 
       // fonts
       $mpdf_default_config = (new Mpdf\Config\ConfigVariables())->getDefaults();
@@ -156,6 +157,7 @@ function dkpdf_output_pdf( $query ) {
           'margin_top'        => $dkpdf_margin_top,
           'margin_bottom'     => $dkpdf_margin_bottom,
           'margin_header'     => $dkpdf_margin_header,
+          'margin_footer'     => $dkpdf_margin_footer,
           'fontDir'           => $dkpdf_mpdf_font_dir,
           'fontdata'          => $dkpdf_mpdf_font_data,
       ]);
