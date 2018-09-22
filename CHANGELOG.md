@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.10.0
+- New margin footer setting. Thanks to [Ted Barnett](https://github.com/contemplate).
+- New action `dkpdf_pdf_pre_output`. Thanks to [Justin Sainton](https://github.com/JustinSainton).
+
 ## 1.9.6
 - New filters `dkpdf_mpdf_font_dir`, `dkpdf_mpdf_font_data`, `dkpdf_mpdf_temp_dir`. Thanks to [joostvanbockel](https://github.com/joostvanbockel).
 
