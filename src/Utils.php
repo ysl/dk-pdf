@@ -12,13 +12,12 @@ class Utils
      */
     public static function getPostTypes()
     {
-
-        $default_post_types = get_post_types(['public' => true, '_builtin' => true]);
-        $custom_post_types = get_post_types(['public' => true, '_builtin' => false]);
+        $defaultPostTypes = get_post_types(['public' => true, '_builtin' => true]);
+        $customPostTypes = get_post_types(['public' => true, '_builtin' => false]);
 
         return apply_filters(
             'dkpdf_posts_arr',
-            array_merge($default_post_types, $custom_post_types)
+            array_merge($defaultPostTypes, $customPostTypes)
         );
     }
 }

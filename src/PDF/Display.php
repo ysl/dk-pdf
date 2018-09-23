@@ -56,8 +56,8 @@ class Display
             return $content;
         }
 
-        $button_position = get_option('dkpdf_pdfbutton_position', 'before');
-        $content = $this->addButtonToContent($button_position, $content);
+        $buttonPosition = get_option('dkpdf_pdfbutton_position', 'before');
+        $content = $this->addButtonToContent($buttonPosition, $content);
 
         return $content;
     }
@@ -76,14 +76,14 @@ class Display
         }
 
         global $post;
-        $post_type = get_post_type($post->ID);
+        $postType = get_post_type($post->ID);
 
-        $button_post_types = get_option('dkpdf_pdfbutton_post_types');
-        if(!$button_post_types) {
+        $buttonPostTypes = get_option('dkpdf_pdfbutton_post_types');
+        if (!$buttonPostTypes) {
             return true;
         }
 
-        if (!in_array($post_type, $button_post_types, true)) {
+        if (!in_array($postType, $buttonPostTypes, true)) {
             return true;
         }
 
@@ -97,28 +97,28 @@ class Display
     /**
      * Add PDF button to content.
      *
-     * @param string $button_position Button position.
+     * @param string $buttonPosition Button position.
      * @param string $content Post content.
      *
      * @return string
      */
-    public function addButtonToContent($button_position, $content)
+    public function addButtonToContent($buttonPosition, $content)
     {
 
-        if ('shortcode' === $button_position) {
+        if ('shortcode' === $buttonPosition) {
             return $content;
         }
 
         $output = $content;
 
-        if ('before' === $button_position) {
+        if ('before' === $buttonPosition) {
 
             ob_start();
             $this->template->part('dkpdf-button');
 
             return ob_get_clean() . $output;
 
-        } elseif ('after' === $button_position) {
+        } elseif ('after' === $buttonPosition) {
 
             ob_start();
             $this->template->part('dkpdf-button');
@@ -173,8 +173,8 @@ class Display
 
         if ('on' === get_option('dkpdf_enable_protection')) {
 
-            $grant_permissions = get_option('dkpdf_grant_permissions');
-            $this->mpdf->SetProtection($grant_permissions);
+            $grantPermissions = get_option('dkpdf_grant_permissions');
+            $this->mpdf->SetProtection($grantPermissions);
         }
 
         if ('on' === get_option('dkpdf_keep_columns')) {
@@ -191,11 +191,11 @@ class Display
     public function PDFDisplay()
     {
 
-        $pdf_header_html = $this->getTemplate('dkpdf-header');
-        $this->mpdf->SetHTMLHeader($pdf_header_html);
+        $PDFHeaderHtml = $this->getTemplate('dkpdf-header');
+        $this->mpdf->SetHTMLHeader($PDFHeaderHtml);
 
-        $pdf_footer_html = $this->getTemplate('dkpdf-footer');
-        $this->mpdf->SetHTMLFooter($pdf_footer_html);
+        $PDFooterHtml = $this->getTemplate('dkpdf-footer');
+        $this->mpdf->SetHTMLFooter($PDFooterHtml);
 
         $this->mpdf->WriteHTML(apply_filters('dkpdf_before_content', ''));
         $this->mpdf->WriteHTML($this->getTemplate('dkpdf-index'));
@@ -210,8 +210,8 @@ class Display
         $this->mpdf->SetTitle($title);
         $this->mpdf->SetAuthor(apply_filters('dkpdf_pdf_author', get_bloginfo('name')));
 
-        $pdfbutton_action = (string)get_option('dkpdf_pdfbutton_action', 'open');
-        if ('open' === $pdfbutton_action) {
+        $PDFButtonAction = (string)get_option('dkpdf_pdfbutton_action', 'open');
+        if ('open' === $PDFButtonAction) {
             $this->mpdf->Output($title . '.pdf', 'I');
         } else {
             $this->mpdf->Output($title . '.pdf', 'D');
@@ -240,7 +240,7 @@ class Display
      * @wp-hook query_vars
      *
      * @param array $query_vars
-     *
+     *º
      * @return array
      */
     public function setQueryVars($query_vars)

@@ -4,10 +4,6 @@ namespace Dinamiko\DKPDF;
 
 use Dinamiko\DKPDF\Admin\Fields;
 use Dinamiko\DKPDF\Admin\Settings;
-use Dinamiko\DKPDF\MetaBox;
-use Dinamiko\DKPDF\AssetLoader;
-use Dinamiko\DKPDF\TemplateLoader;
-use Dinamiko\DKPDF\Shortcode;
 use Dinamiko\DKPDF\PDF\Display;
 
 class DKPDF

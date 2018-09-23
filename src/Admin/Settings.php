@@ -159,9 +159,9 @@ class Settings
     public function addSettingsLink($links)
     {
 
-        $settings_link = '<a href="admin.php?page=' . 'dkpdf_settings">' . __('Settings',
-                'dkpdf') . '</a>';
-        array_push($links, $settings_link);
+        $settingsLink = '<a href="admin.php?page=' . 'dkpdf_settings">'
+            . __('Settings', 'dkpdf') . '</a>';
+        array_push($links, $settingsLink);
 
         return $links;
     }
@@ -173,7 +173,6 @@ class Settings
      */
     private function settingsFields()
     {
-
         // pdf button settings
         $settings['pdfbtn'] = array(
             'title' => __('PDF Button', 'dkpdf'),
@@ -449,8 +448,8 @@ class Settings
                     }
 
                     // Register field
-                    $option_name = 'dkpdf_' . $field['id'];
-                    register_setting('dkpdf_settings', $option_name, $validation);
+                    $optionName = 'dkpdf_' . $field['id'];
+                    register_setting('dkpdf_settings', $optionName, $validation);
 
                     // Add field to page
                     add_settings_field(

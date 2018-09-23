@@ -116,8 +116,8 @@ class Shortcode
 
         if ($pdf) {
             $columns = sanitize_text_field($atts['columns']);
-            $equal_columns = sanitize_text_field($atts['equal-columns']);
-            $vAlign = $equal_columns == 'true' ? 'vAlign="justify"' : '';
+            $equalColumns = sanitize_text_field($atts['equal-columns']);
+            $vAlign = $equalColumns == 'true' ? 'vAlign="justify"' : '';
             $gap = sanitize_text_field($atts['gap']);
 
             return '<columns column-count="' . $columns . '" ' . $vAlign . ' column-gap="' . $gap . '" />' . do_shortcode($content) . '<columns column-count="1">';
