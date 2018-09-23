@@ -28,17 +28,17 @@ class Settings
         $this->fields = $fields;
 
         // Initialise settings
-        add_action('init', array($this, 'init_settings'), 11);
+        add_action('init', array($this, 'initSettings'), 11);
 
         // Register plugin settings
-        add_action('admin_init', array($this, 'register_settings'));
+        add_action('admin_init', array($this, 'registerSettings'));
 
         // Add settings page to menu
-        add_action('admin_menu', array($this, 'add_menu_item'));
+        add_action('admin_menu', array($this, 'addMenuItem'));
 
         // Add settings link to plugins page
         add_filter('plugin_action_links_' . plugin_basename(DKPDF_PLUGIN_FILE),
-            array($this, 'add_settings_link'));
+            array($this, 'addSettingsLink'));
     }
 
     /**
@@ -48,10 +48,10 @@ class Settings
      *
      * @return void
      */
-    public function init_settings()
+    public function initSettings()
     {
 
-        $this->settings = $this->settings_fields();
+        $this->settings = $this->settingsFields();
     }
 
     /**
@@ -61,23 +61,23 @@ class Settings
      *
      * @return void
      */
-    public function add_menu_item()
+    public function addMenuItem()
     {
 
         // main menu
         $page = add_menu_page('DK PDF', 'DK PDF', 'manage_options', 'dkpdf_settings',
-            array($this, 'settings_page'));
+            array($this, 'settingsPage'));
 
         // Addons submenu
         add_submenu_page('dkpdf_settings', 'Addons', 'Addons', 'manage_options', 'dkpdf-addons',
-            array($this, 'dkpdf_addons_screen'));
+            array($this, 'addonsScreen'));
 
         // support
         add_submenu_page('dkpdf_settings', 'Support', 'Support', 'manage_options', 'dkpdf-support',
-            array($this, 'dkpdf_support_screen'));
+            array($this, 'supportScreen'));
 
         // settings assets
-        add_action('admin_print_styles-' . $page, array($this, 'settings_assets'));
+        add_action('admin_print_styles-' . $page, array($this, 'settingsAssets'));
 
     }
 
@@ -86,7 +86,7 @@ class Settings
      *
      * @return void
      */
-    public function dkpdf_support_screen()
+    public function supportScreen()
     { ?>
 
         <div class="wrap">
@@ -117,7 +117,7 @@ class Settings
      *
      * @return void
      */
-    public function dkpdf_addons_screen()
+    public function addonsScreen()
     { ?>
 
         <div class="wrap">
@@ -139,7 +139,7 @@ class Settings
      *
      * @return void
      */
-    public function settings_assets()
+    public function settingsAssets()
     {
 
         wp_enqueue_media();
@@ -156,7 +156,7 @@ class Settings
      *
      * @return array        Modified links
      */
-    public function add_settings_link($links)
+    public function addSettingsLink($links)
     {
 
         $settings_link = '<a href="admin.php?page=' . 'dkpdf_settings">' . __('Settings',
@@ -171,7 +171,7 @@ class Settings
      *
      * @return array Fields to be displayed on settings page.
      */
-    private function settings_fields()
+    private function settingsFields()
     {
 
         // pdf button settings
@@ -192,7 +192,7 @@ class Settings
                     'label' => __('Post types to apply:', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox_multi',
-                    'options' => Utils::get_post_types(),
+                    'options' => Utils::getPostTypes(),
                     'default' => array(),
                 ),
                 array(
@@ -402,7 +402,7 @@ class Settings
             ),
         );
 
-        $settings = apply_filters('dkpdf_settings_fields', $settings);
+        $settings = apply_filters('dkpdf_settingsFields', $settings);
 
         return $settings;
 
@@ -415,7 +415,7 @@ class Settings
      *
      * @return void
      */
-    public function register_settings()
+    public function registerSettings()
     {
 
         if (is_array($this->settings)) {
@@ -437,7 +437,7 @@ class Settings
                 }
 
                 // Add section to page
-                add_settings_section($section, $data['title'], array($this, 'settings_section'),
+                add_settings_section($section, $data['title'], array($this, 'settingsSection'),
                     'dkpdf_settings');
 
                 foreach ($data['fields'] as $field) {
@@ -456,7 +456,7 @@ class Settings
                     add_settings_field(
                         $field['id'],
                         $field['label'],
-                        array($this->fields, 'display_field'),
+                        array($this->fields, 'displayField'),
                         'dkpdf_settings',
                         $section,
                         array('field' => $field, 'prefix' => 'dkpdf_')
@@ -470,7 +470,7 @@ class Settings
         }
     }
 
-    public function settings_section($section)
+    public function settingsSection($section)
     {
 
         $html = '<p> ' . $this->settings[$section['id']]['description'] . '</p>' . "\n";
@@ -484,7 +484,7 @@ class Settings
      *
      * @return void
      */
-    public function settings_page()
+    public function settingsPage()
     {
 
         if (isset($_GET['settings-updated'])) { ?>

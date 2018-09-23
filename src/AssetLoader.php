@@ -2,19 +2,19 @@
 
 namespace Dinamiko\DKPDF;
 
-class AssetManager
+class AssetLoader
 {
 
     public function init()
     {
 
-        add_action('wp_enqueue_scripts', array($this, 'dkpdf_enqueue_styles'), 15);
-        add_action('wp_enqueue_scripts', array($this, 'dkpdf_enqueue_scripts'), 10);
-        add_action('admin_enqueue_scripts', array($this, 'dkpdf_admin_enqueue_scripts'), 10, 1);
-        add_action('admin_enqueue_scripts', array($this, 'dkpdf_admin_enqueue_styles'), 10, 1);
+        add_action('wp_enqueue_scripts', array($this, 'enqueueStyles'), 15);
+        add_action('wp_enqueue_scripts', array($this, 'enqueueScripts'), 10);
+        add_action('admin_enqueue_scripts', array($this, 'adminEnqueueScripts'), 10, 1);
+        add_action('admin_enqueue_scripts', array($this, 'adminEnqueueStyles'), 10, 1);
     }
 
-    public function dkpdf_enqueue_styles()
+    public function enqueueStyles()
     {
 
         wp_register_style(
@@ -34,7 +34,7 @@ class AssetManager
         wp_enqueue_style('dkpdf-frontend');
     }
 
-    public function dkpdf_enqueue_scripts()
+    public function enqueueScripts()
     {
 
         wp_register_script(
@@ -47,7 +47,7 @@ class AssetManager
         wp_enqueue_script('dkpdf-frontend');
     }
 
-    public function dkpdf_admin_enqueue_styles($hook)
+    public function adminEnqueueStyles($hook)
     {
 
         if (isset($hook) && $hook === 'toplevel_page_dkpdf_settings') {
@@ -61,7 +61,7 @@ class AssetManager
         }
     }
 
-    public function dkpdf_admin_enqueue_scripts($hook)
+    public function adminEnqueueScripts($hook)
     {
 
         if (isset($hook) && $hook === 'toplevel_page_dkpdf_settings') {

@@ -5,7 +5,7 @@ namespace Dinamiko\DKPDF;
 use Dinamiko\DKPDF\Admin\Fields;
 use Dinamiko\DKPDF\Admin\Settings;
 use Dinamiko\DKPDF\MetaBox;
-use Dinamiko\DKPDF\AssetManager;
+use Dinamiko\DKPDF\AssetLoader;
 use Dinamiko\DKPDF\TemplateLoader;
 use Dinamiko\DKPDF\Shortcode;
 use Dinamiko\DKPDF\PDF\Display;
@@ -24,7 +24,7 @@ class DKPDF
             (new MetaBox())->init();
         }
 
-        (new AssetManager())->init();
+        (new AssetLoader())->init();
 
         $template = new TemplateLoader();
         (new Shortcode($template))->init();

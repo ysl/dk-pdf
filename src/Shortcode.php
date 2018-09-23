@@ -17,18 +17,17 @@ class Shortcode
      */
     public function __construct(TemplateLoader $template)
     {
-
         $this->template = $template;
     }
 
     public function init()
     {
 
-        add_shortcode('dkpdf-button', array($this, 'dkpdf_button_shortcode'));
-        add_shortcode('dkpdf-remove', array($this, 'dkpdf_remove_shortcode'));
-        add_shortcode('dkpdf-pagebreak', array($this, 'dkpdf_pagebreak_shortcode'));
-        add_shortcode('dkpdf-columns', array($this, 'dkpdf_columns_shortcode'));
-        add_shortcode('dkpdf-columnbreak', array($this, 'dkpdf_columnbreak_shortcode'));
+        add_shortcode('dkpdf-button', array($this, 'buttonShortcode'));
+        add_shortcode('dkpdf-remove', array($this, 'removeShortcode'));
+        add_shortcode('dkpdf-pagebreak', array($this, 'pagebreak'));
+        add_shortcode('dkpdf-columns', array($this, 'columnsShortcode'));
+        add_shortcode('dkpdf-columnbreak', array($this, 'columnbreakShortcode'));
     }
 
     /**
@@ -36,7 +35,7 @@ class Shortcode
      * This shortcode is used to display DK PDF Button
      * doesn't has attributes, uses settings from DK PDF Settings / PDF Button
      */
-    public function dkpdf_button_shortcode($atts, $content = null)
+    public function buttonShortcode($atts, $content = null)
     {
 
         ob_start();
@@ -52,7 +51,7 @@ class Shortcode
      *
      * @return string
      */
-    public function dkpdf_remove_shortcode($atts, $content = null)
+    public function removeShortcode($atts, $content = null)
     {
 
         $atts = shortcode_atts(array(
@@ -104,7 +103,7 @@ class Shortcode
      * <columnbreak /> <column_break /> or <newcolumn /> (synonymous) can be included to force a new column.
      * (This will automatically disable any justification or readjustment of column heights.)
      */
-    public function dkpdf_columns_shortcode($atts, $content = null)
+    public function columnsShortcode($atts, $content = null)
     {
 
         $atts = shortcode_atts(array(
@@ -135,7 +134,7 @@ class Shortcode
      *
      * @uses <columnbreak />
      */
-    public function dkpdf_columnbreak_shortcode($atts, $content = null)
+    public function columnbreakShortcode($atts, $content = null)
     {
 
         $pdf = get_query_var('pdf');

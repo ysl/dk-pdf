@@ -12,7 +12,7 @@ class Fields
      *
      * @return void
      */
-    public function display_field($args)
+    public function displayField($args)
     {
 
         $field = $args['field'];

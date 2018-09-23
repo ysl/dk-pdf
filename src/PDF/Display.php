@@ -31,9 +31,9 @@ class Display
     public function init()
     {
 
-        add_filter('the_content', array($this, 'display_pdf_button'));
-        add_action('wp', array($this, 'create_pdf'));
-        add_filter('query_vars', array($this, 'set_query_vars'));
+        add_filter('the_content', array($this, 'displayPDFButton'));
+        add_action('wp', array($this, 'createPDF'));
+        add_filter('query_vars', array($this, 'setQueryVars'));
     }
 
     /**
@@ -45,10 +45,10 @@ class Display
      *
      * @return mixed|string
      */
-    public function display_pdf_button($content)
+    public function displayPDFButton($content)
     {
 
-        if ($this->remove_button()) {
+        if ($this->removeButton()) {
 
             remove_shortcode('dkpdf-button');
             $content = str_replace('[dkpdf-button]', '', $content);
@@ -57,7 +57,7 @@ class Display
         }
 
         $button_position = get_option('dkpdf_pdfbutton_position', 'before');
-        $content = $this->add_button_to_content($button_position, $content);
+        $content = $this->addButtonToContent($button_position, $content);
 
         return $content;
     }
@@ -67,7 +67,7 @@ class Display
      *
      * @return boolean
      */
-    public function remove_button()
+    public function removeButton()
     {
 
         $pdf = (string)get_query_var('pdf');
@@ -102,7 +102,7 @@ class Display
      *
      * @return string
      */
-    public function add_button_to_content($button_position, $content)
+    public function addButtonToContent($button_position, $content)
     {
 
         if ('shortcode' === $button_position) {
@@ -137,7 +137,7 @@ class Display
      *
      * @return void
      */
-    public function create_pdf()
+    public function createPDF()
     {
 
         $pdf = (string)get_query_var('pdf');
@@ -157,9 +157,9 @@ class Display
 
             $this->mpdf = new \Mpdf\Mpdf(apply_filters('dkpdf_pdf_config', $config));
 
-            $this->pdf_setup();
+            $this->PDFSetup();
 
-            $this->pdf_display();
+            $this->PDFDisplay();
 
             $this->pdf_output();
 
@@ -168,7 +168,7 @@ class Display
 
     }
 
-    public function pdf_setup()
+    public function PDFSetup()
     {
 
         if ('on' === get_option('dkpdf_enable_protection')) {
@@ -188,17 +188,17 @@ class Display
         //$mpdf->autoLangToFont = true;
     }
 
-    public function pdf_display()
+    public function PDFDisplay()
     {
 
-        $pdf_header_html = $this->dkpdf_get_template('dkpdf-header');
+        $pdf_header_html = $this->getTemplate('dkpdf-header');
         $this->mpdf->SetHTMLHeader($pdf_header_html);
 
-        $pdf_footer_html = $this->dkpdf_get_template('dkpdf-footer');
+        $pdf_footer_html = $this->getTemplate('dkpdf-footer');
         $this->mpdf->SetHTMLFooter($pdf_footer_html);
 
         $this->mpdf->WriteHTML(apply_filters('dkpdf_before_content', ''));
-        $this->mpdf->WriteHTML($this->dkpdf_get_template('dkpdf-index'));
+        $this->mpdf->WriteHTML($this->getTemplate('dkpdf-index'));
         $this->mpdf->WriteHTML(apply_filters('dkpdf_after_content', ''));
     }
 
@@ -225,7 +225,7 @@ class Display
      *
      * @return string
      */
-    function dkpdf_get_template($template_name)
+    public function getTemplate($template_name)
     {
 
         ob_start();
@@ -243,7 +243,7 @@ class Display
      *
      * @return array
      */
-    public function set_query_vars($query_vars)
+    public function setQueryVars($query_vars)
     {
 
         $query_vars[] = 'pdf';

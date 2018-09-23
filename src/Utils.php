@@ -10,7 +10,7 @@ class Utils
      *
      * @return array
      */
-    public static function get_post_types()
+    public static function getPostTypes()
     {
 
         $default_post_types = get_post_types(['public' => true, '_builtin' => true]);
