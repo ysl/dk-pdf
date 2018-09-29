@@ -15,4 +15,12 @@
         </properties>
     </rule>
 
+    <rule ref="Inpsyde">
+        <exclude name="Inpsyde.CodeQuality.ReturnTypeDeclaration.NoReturnType" />
+        <exclude name="Inpsyde.CodeQuality.ArgumentTypeDeclaration.NoArgumentType" />
+    </rule>
+    <rule ref="NeutronStandard.StrictTypes">
+        <exclude name="NeutronStandard.StrictTypes.RequireStrictTypes.StrictTypes" />
+    </rule>
+
 </ruleset>

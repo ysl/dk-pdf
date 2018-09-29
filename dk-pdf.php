@@ -32,9 +32,7 @@ define('DKPDF_PLUGIN_FILE', __FILE__);
  */
 function initialize()
 {
-
     try {
-
         if (is_readable(__DIR__ . '/vendor/autoload.php')) {
             /** @noinspection PhpIncludeInspection */
             include_once __DIR__ . '/vendor/autoload.php';
@@ -48,12 +46,12 @@ function initialize()
 
         (new DKPDF)->init();
 
-    } catch (\Throwable $e) {
+    } catch (\Throwable $error) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            throw $e;
+            throw $error;
         }
 
-        do_action('dinamiko.dkpdf.error', $e);
+        do_action('dinamiko.dkpdf.error', $error);
     }
 }
 

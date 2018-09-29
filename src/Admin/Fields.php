@@ -96,7 +96,7 @@ class Fields
             case 'checkbox_multi':
                 foreach ($field['options'] as $key => $value) {
                     $checked = false;
-                    if ($option === false) {
+                    if (!$option) {
                         $option = [];
                     }
                     if (in_array($key, $option, true)) {
