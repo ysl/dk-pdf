@@ -1,5 +1,9 @@
 language: php
 
+branches:
+  only:
+  - refactoring
+
 php:
 - '5.6'
 
