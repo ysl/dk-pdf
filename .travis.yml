@@ -6,6 +6,7 @@ branches:
 
 php:
 - '5.6'
+- '7.0'
 
 before_script:
 - composer install --no-progress --prefer-source
