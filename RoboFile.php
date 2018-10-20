@@ -3,22 +3,6 @@
 class RoboFile extends \Robo\Tasks
 {
 
-    public function test()
-    {
-//        $this->taskFilesystemStack()
-//            ->mkdir('logs')
-//            ->touch('logs/stuff.txt')
-//            ->run();
-//
-//        $this->taskDeleteDir('logs')->run();
-        $this->taskFilesystemStack()
-            ->mkdir('tmp-build')
-            ->copy('composer.json', 'tmp-build/composer.json')
-            ->run();
-
-        $this->_exec('composer install -d ./tmp-build --no-dev -o');
-    }
-
     public function build()
     {
         // create a temporary directory and copy composer.json
