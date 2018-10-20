@@ -24,16 +24,14 @@ class Display
      */
     public function __construct(TemplateLoader $template)
     {
-
         $this->template = $template;
     }
 
     public function init()
     {
-
-        add_filter('the_content', array($this, 'displayPDFButton'));
-        add_action('wp', array($this, 'createPDF'));
-        add_filter('query_vars', array($this, 'setQueryVars'));
+        add_filter('the_content', [$this, 'displayPDFButton']);
+        add_action('wp', [$this, 'createPDF']);
+        add_filter('query_vars', [$this, 'queryVars']);
     }
 
     /**
@@ -47,9 +45,7 @@ class Display
      */
     public function displayPDFButton($content)
     {
-
         if ($this->removeButton()) {
-
             remove_shortcode('dkpdf-button');
             $content = str_replace('[dkpdf-button]', '', $content);
 
@@ -69,7 +65,6 @@ class Display
      */
     public function removeButton()
     {
-
         $pdf = (string)get_query_var('pdf');
         if ($pdf) {
             return true;
@@ -104,7 +99,6 @@ class Display
      */
     public function addButtonToContent($buttonPosition, $content)
     {
-
         if ('shortcode' === $buttonPosition) {
             return $content;
         }
@@ -112,22 +106,19 @@ class Display
         $output = $content;
 
         if ('before' === $buttonPosition) {
-
             ob_start();
             $this->template->part('dkpdf-button');
 
             return ob_get_clean() . $output;
 
         } elseif ('after' === $buttonPosition) {
-
             ob_start();
             $this->template->part('dkpdf-button');
 
             return $output . ob_get_clean();
-
-        } else {
-            return $content;
         }
+
+        return $content;
     }
 
     /**
@@ -139,15 +130,15 @@ class Display
      */
     public function createPDF()
     {
-
         $pdf = (string)get_query_var('pdf');
         if ($pdf) {
-
             $config = [
                 'tempDir' => apply_filters('dkpdf_pdf_temp_dir', DKPDF_PLUGIN_DIR . '/tmp'),
                 'default_font_size' => get_option('dkpdf_font_size', '12'),
-                'format' => get_option('dkpdf_page_orientation',
-                    'vertical') === 'horizontal' ? 'A4-L' : 'A4',
+                'format' => get_option(
+                    'dkpdf_page_orientation',
+                    'vertical'
+                ) === 'horizontal' ? 'A4-L' : 'A4',
                 'margin_left' => get_option('dkpdf_margin_left', '15'),
                 'margin_right' => get_option('dkpdf_margin_right', '15'),
                 'margin_top' => get_option('dkpdf_margin_top', '50'),
@@ -161,24 +152,20 @@ class Display
 
             $this->PDFDisplay();
 
-            $this->pdf_output();
+            $this->pdfOutput();
 
             exit;
         }
-
     }
 
     public function PDFSetup()
     {
-
         if ('on' === get_option('dkpdf_enable_protection')) {
-
             $grantPermissions = get_option('dkpdf_grant_permissions');
             $this->mpdf->SetProtection($grantPermissions);
         }
 
         if ('on' === get_option('dkpdf_keep_columns')) {
-
             $this->mpdf->keepColumns = true;
         }
 
@@ -190,28 +177,26 @@ class Display
 
     public function PDFDisplay()
     {
+        $pdfHeaderHtml = $this->template('dkpdf-header');
+        $this->mpdf->SetHTMLHeader($pdfHeaderHtml);
 
-        $PDFHeaderHtml = $this->getTemplate('dkpdf-header');
-        $this->mpdf->SetHTMLHeader($PDFHeaderHtml);
-
-        $PDFooterHtml = $this->getTemplate('dkpdf-footer');
-        $this->mpdf->SetHTMLFooter($PDFooterHtml);
+        $pdfFooterHtml = $this->template('dkpdf-footer');
+        $this->mpdf->SetHTMLFooter($pdfFooterHtml);
 
         $this->mpdf->WriteHTML(apply_filters('dkpdf_before_content', ''));
-        $this->mpdf->WriteHTML($this->getTemplate('dkpdf-index'));
+        $this->mpdf->WriteHTML($this->template('dkpdf-index'));
         $this->mpdf->WriteHTML(apply_filters('dkpdf_after_content', ''));
     }
 
-    public function pdf_output()
+    public function pdfOutput()
     {
-
         global $post;
         $title = apply_filters('dkpdf_pdf_filename', get_the_title($post->ID));
         $this->mpdf->SetTitle($title);
         $this->mpdf->SetAuthor(apply_filters('dkpdf_pdf_author', get_bloginfo('name')));
 
-        $PDFButtonAction = (string)get_option('dkpdf_pdfbutton_action', 'open');
-        if ('open' === $PDFButtonAction) {
+        $pdfButtonAction = (string)get_option('dkpdf_pdfbutton_action', 'open');
+        if ('open' === $pdfButtonAction) {
             $this->mpdf->Output($title . '.pdf', 'I');
         } else {
             $this->mpdf->Output($title . '.pdf', 'D');
@@ -221,15 +206,13 @@ class Display
     /**
      * Returns a template
      *
-     * @param $template_name
-     *
+     * @param $templateName
      * @return string
      */
-    public function getTemplate($template_name)
+    public function template($templateName)
     {
-
         ob_start();
-        $this->template->part($template_name);
+        $this->template->part($templateName);
 
         return ob_get_clean();
     }
@@ -238,16 +221,12 @@ class Display
      * Set query_vars
      *
      * @wp-hook query_vars
-     *
-     * @param array $query_vars
-     *º
+     * @param array $queryVars
      * @return array
      */
-    public function setQueryVars($query_vars)
+    public function queryVars($queryVars)
     {
-
-        $query_vars[] = 'pdf';
-
-        return $query_vars;
+        $queryVars[] = 'pdf';
+        return $queryVars;
     }
 }

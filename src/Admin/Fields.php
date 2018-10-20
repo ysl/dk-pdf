@@ -14,7 +14,6 @@ class Fields
      */
     public function displayField($args)
     {
-
         $field = $args['field'];
         $optionName = $args['prefix'] . $field['id'];
         $option = get_option($optionName, $field['default']);
@@ -120,7 +119,7 @@ class Fields
                     }
                     $html .= '<label for="'
                         . esc_attr($field['id'] . '_' . $key) . '"><input type="radio" '
-                        . checked($checked, true, false). ' name="'
+                        . checked($checked, true, false) . ' name="'
                         . esc_attr($optionName) . '" value="'
                         . esc_attr($key) . '" id="'
                         . esc_attr($field['id'] . '_' . $key) . '" /> ' . $value . '</label> ';
@@ -161,7 +160,7 @@ class Fields
                 }
                 $html .= '<img id="' . $optionName . '_preview" class="image_preview" src="'
                     . $imageThumb . '" /><br/>' . "\n";
-                $html .= '<input id="' . $optionName. '_button" type="button" data-uploader_title="'
+                $html .= '<input id="' . $optionName . '_button" type="button" data-uploader_title="'
                     . __('Upload an image', 'dkpdf')
                     . '" data-uploader_button_text="'
                     . __('Use image', 'dkpdf')
@@ -178,8 +177,8 @@ class Fields
             case 'color':
                 ?>
                 <div class="color-picker" style="position:relative;">
-                    <input type="text" name="<?php esc_attr_e($optionName); ?>" class="color"
-                           value="<?php esc_attr_e($option); ?>"/>
+                    <input type="text" name="<?php esc_attr($optionName); ?>" class="color"
+                           value="<?php esc_attr($option); ?>"/>
                     <div style="position:absolute;background:#FFF;z-index:99;border-radius:100%;"
                          class="colorpicker"></div>
                 </div>

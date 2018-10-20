@@ -10,7 +10,7 @@ class Settings
     /**
      * @var array
      */
-    public $settings;
+    private $settings;
 
     /**
      * @var Fields
@@ -24,21 +24,22 @@ class Settings
      */
     public function __construct(Fields $fields)
     {
-
         $this->fields = $fields;
 
         // Initialise settings
-        add_action('init', array($this, 'initSettings'), 11);
+        add_action('init', [$this, 'initSettings'], 11);
 
         // Register plugin settings
-        add_action('admin_init', array($this, 'registerSettings'));
+        add_action('admin_init', [$this, 'registerSettings']);
 
         // Add settings page to menu
-        add_action('admin_menu', array($this, 'addMenuItem'));
+        add_action('admin_menu', [$this, 'addMenuItem']);
 
         // Add settings link to plugins page
-        add_filter('plugin_action_links_' . plugin_basename(DKPDF_PLUGIN_FILE),
-            array($this, 'addSettingsLink'));
+        add_filter(
+            'plugin_action_links_' . plugin_basename(DKPDF_PLUGIN_FILE),
+            [$this, 'addSettingsLink']
+        );
     }
 
     /**
@@ -50,7 +51,6 @@ class Settings
      */
     public function initSettings()
     {
-
         $this->settings = $this->settingsFields();
     }
 
@@ -58,26 +58,41 @@ class Settings
      * Adds DK PDF admin menu.
      *
      * @wp-hook admin_menu
-     *
      * @return void
      */
     public function addMenuItem()
     {
-
         // main menu
-        $page = add_menu_page('DK PDF', 'DK PDF', 'manage_options', 'dkpdf_settings',
-            array($this, 'settingsPage'));
+        $page = add_menu_page(
+            'DK PDF',
+            'DK PDF',
+            'manage_options',
+            'dkpdf_settings',
+            [$this, 'settingsPage']
+        );
 
         // Addons submenu
-        add_submenu_page('dkpdf_settings', 'Addons', 'Addons', 'manage_options', 'dkpdf-addons',
-            array($this, 'addonsScreen'));
+        add_submenu_page(
+            'dkpdf_settings',
+            'Addons',
+            'Addons',
+            'manage_options',
+            'dkpdf-addons',
+            [$this, 'addonsScreen']
+        );
 
         // support
-        add_submenu_page('dkpdf_settings', 'Support', 'Support', 'manage_options', 'dkpdf-support',
-            array($this, 'supportScreen'));
+        add_submenu_page(
+            'dkpdf_settings',
+            'Support',
+            'Support',
+            'manage_options',
+            'dkpdf-support',
+            [$this, 'supportScreen']
+        );
 
         // settings assets
-        add_action('admin_print_styles-' . $page, array($this, 'settingsAssets'));
+        add_action('admin_print_styles-' . $page, [$this, 'settingsAssets']);
 
     }
 
@@ -87,8 +102,8 @@ class Settings
      * @return void
      */
     public function supportScreen()
-    { ?>
-
+    {
+        ?>
         <div class="wrap">
             <h2 style="float:left;width:100%;">DK PDF Support</h2>
 
@@ -118,8 +133,8 @@ class Settings
      * @return void
      */
     public function addonsScreen()
-    { ?>
-
+    {
+        ?>
         <div class="wrap">
             <h2>DK PDF Addons</h2>
 
@@ -141,11 +156,14 @@ class Settings
      */
     public function settingsAssets()
     {
-
         wp_enqueue_media();
 
-        wp_register_script('dkpdf-settings-js', plugins_url('dk-pdf/assets/js/settings-admin.js'),
-            array('jquery'), DKPDF_VERSION);
+        wp_register_script(
+            'dkpdf-settings-js',
+            plugins_url('dk-pdf/assets/js/settings-admin.js'),
+            ['jquery'],
+            DKPDF_VERSION
+        );
         wp_enqueue_script('dkpdf-settings-js');
     }
 
@@ -153,12 +171,10 @@ class Settings
      * Add settings link to plugin list table
      *
      * @param  array $links Existing links
-     *
-     * @return array        Modified links
+     * @return array Modified links
      */
     public function addSettingsLink($links)
     {
-
         $settingsLink = '<a href="admin.php?page=' . 'dkpdf_settings">'
             . __('Settings', 'dkpdf') . '</a>';
         array_push($links, $settingsLink);
@@ -174,135 +190,137 @@ class Settings
     private function settingsFields()
     {
         // pdf button settings
-        $settings['pdfbtn'] = array(
+        $settings['pdfbtn'] = [
             'title' => __('PDF Button', 'dkpdf'),
             'description' => '',
-            'fields' => array(
-                array(
+            'fields' => [
+                [
                     'id' => 'pdfbutton_text',
                     'label' => __('Button text', 'dkpdf'),
                     'description' => '',
                     'type' => 'text',
                     'default' => 'PDF Button',
                     'placeholder' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdfbutton_post_types',
                     'label' => __('Post types to apply:', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox_multi',
-                    'options' => Utils::getPostTypes(),
-                    'default' => array(),
-                ),
-                array(
+                    'options' => Utils::postTypes(),
+                    'default' => [],
+                ],
+                [
                     'id' => 'pdfbutton_action',
                     'label' => __('Action', 'dkpdf'),
                     'description' => '',
                     'type' => 'radio',
-                    'options' => array(
+                    'options' => [
                         'open' => 'Open PDF in new Window',
-                        'download' => 'Download PDF directly'
-                    ),
+                        'download' => 'Download PDF directly',
+                    ],
                     'default' => 'open',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdfbutton_position',
                     'label' => __('Position', 'dkpdf'),
                     'description' => '',
                     'type' => 'radio',
-                    'options' => array(
+                    'options' => [
                         'shortcode' => 'Use shortcode',
                         'before' => 'Before content',
                         'after' => 'After content',
-                    ),
+                    ],
                     'default' => 'before',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdfbutton_align',
                     'label' => __('Align', 'dkpdf'),
                     'description' => '',
                     'type' => 'radio',
-                    'options' => array('left' => 'Left', 'center' => 'Center', 'right' => 'Right'),
+                    'options' => ['left' => 'Left', 'center' => 'Center', 'right' => 'Right'],
                     'default' => 'right',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         // pdf setup
-        $settings['dkpdf_setup'] = array(
-            'title' => __('PDF Setup', 'dkpdfg'),
+        $settings['dkpdf_setup'] = [
+            'title' => __('PDF Setup', 'dkpdf'),
             'description' => '',
-            'fields' => array(
-                array(
+            'fields' => [
+                [
                     'id' => 'page_orientation',
-                    'label' => __('Page orientation', 'dkpdfg'),
+                    'label' => __('Page orientation', 'dkpdf'),
                     'description' => '',
                     'type' => 'radio',
-                    'options' => array('vertical' => 'Vertical', 'horizontal' => 'Horizontal'),
+                    'options' => ['vertical' => 'Vertical', 'horizontal' => 'Horizontal'],
                     'default' => 'vertical',
-                ),
-                array(
+                ],
+                [
                     'id' => 'font_size',
-                    'label' => __('Font size', 'dkpdfg'),
+                    'label' => __('Font size', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '12',
                     'placeholder' => '12',
-                ),
-                array(
+                ],
+                [
                     'id' => 'margin_left',
-                    'label' => __('Margin left', 'dkpdfg'),
+                    'label' => __('Margin left', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '15',
                     'placeholder' => '15',
-                ),
-                array(
+                ],
+                [
                     'id' => 'margin_right',
-                    'label' => __('Margin right', 'dkpdfg'),
+                    'label' => __('Margin right', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '15',
                     'placeholder' => '15',
-                ),
-                array(
+                ],
+                [
                     'id' => 'margin_top',
-                    'label' => __('Margin top', 'dkpdfg'),
+                    'label' => __('Margin top', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '50',
                     'placeholder' => '50',
-                ),
-                array(
+                ],
+                [
                     'id' => 'margin_bottom',
-                    'label' => __('Margin bottom', 'dkpdfg'),
+                    'label' => __('Margin bottom', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '30',
                     'placeholder' => '30',
-                ),
-                array(
+                ],
+                [
                     'id' => 'margin_header',
-                    'label' => __('Margin header', 'dkpdfg'),
+                    'label' => __('Margin header', 'dkpdf'),
                     'description' => 'In points (pt)',
                     'type' => 'number',
                     'default' => '15',
                     'placeholder' => '15',
-                ),
-                array(
+                ],
+                [
                     'id' => 'enable_protection',
                     'label' => __('Enable PDF protection', 'dkpdf'),
-                    'description' => __('Encrypts PDF file and respects permissions given below',
-                        'dkpdf'),
+                    'description' => __(
+                        'Encrypts PDF file and respects permissions given below',
+                        'dkpdf'
+                    ),
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'grant_permissions',
                     'label' => __('Protected PDF permissions', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox_multi',
-                    'options' => array(
+                    'options' => [
                         'copy' => 'Copy',
                         'print' => 'Print',
                         'print-highres' => 'Print Highres',
@@ -311,136 +329,138 @@ class Settings
                         'fill-forms' => 'Fill Forms',
                         'extract' => 'Extract',
                         'assemble' => 'Assemble',
-                    ),
-                    'default' => array(),
-                ),
-                array(
+                    ],
+                    'default' => [],
+                ],
+                [
                     'id' => 'keep_columns',
                     'label' => __('Keep columns', 'dkpdf'),
-                    'description' => 'Columns will be written successively (dkpdf-columns shortcode). i.e. there will be no balancing of the length of columns.',
+                    'description' => __(
+                        'Columns will be written successively (dkpdf-columns shortcode). i.e. there will be no balancing of the length of columns.',
+                        'dkpdf'
+                    ),
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         // header & footer settings
-        $settings['pdf_header_footer'] = array(
+        $settings['pdf_header_footer'] = [
             'title' => __('PDF Header & Footer', 'dkpdf'),
             'description' => '',
-            'fields' => array(
-                array(
+            'fields' => [
+                [
                     'id' => 'pdf_header_image',
                     'label' => __('Header logo', 'dkpdf'),
                     'description' => '',
                     'type' => 'image',
                     'default' => '',
                     'placeholder' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdf_header_show_title',
                     'label' => __('Header show title', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdf_header_show_pagination',
                     'label' => __('Header show pagination', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdf_footer_text',
                     'label' => __('Footer text', 'dkpdf'),
                     'description' => __('HTML tags: a, br, em, strong, hr, p, h1 to h4', 'dkpdf'),
                     'type' => 'textarea',
                     'default' => '',
                     'placeholder' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdf_footer_show_title',
                     'label' => __('Footer show title', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'pdf_footer_show_pagination',
                     'label' => __('Footer show pagination', 'dkpdf'),
                     'description' => '',
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-
-            ),
-        );
+                ],
+            ],
+        ];
 
         // style settings
-        $settings['pdf_css'] = array(
+        $settings['pdf_css'] = [
             'title' => __('PDF CSS', 'dkpdf'),
             'description' => '',
-            'fields' => array(
-                array(
+            'fields' => [
+                [
                     'id' => 'pdf_custom_css',
                     'label' => __('PDF Custom CSS', 'dkpdf'),
-                    'description' => __('', 'dkpdf'),
+                    'description' => '',
                     'type' => 'textarea_code',
                     'default' => '',
                     'placeholder' => '',
-                ),
-                array(
+                ],
+                [
                     'id' => 'print_wp_head',
                     'label' => __('Use current theme\'s CSS', 'dkpdf'),
-                    'description' => __('Includes the stylesheet from current theme, but is overridden by PDF Custom CSS and plugins adding its own stylesheets.',
-                        'dkpdf'),
+                    'description' => __(
+                        'Includes the stylesheet from current theme, but is overridden by PDF Custom CSS and plugins adding its own stylesheets.',
+                        'dkpdf'
+                    ),
                     'type' => 'checkbox',
                     'default' => '',
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $settings = apply_filters('dkpdf_settingsFields', $settings);
 
         return $settings;
-
     }
 
     /**
      * Register plugin settings
      *
      * @wp-hook admin_init
-     *
      * @return void
      */
     public function registerSettings()
     {
-
         if (is_array($this->settings)) {
-
             // Check posted/selected tab
-            $current_section = '';
+            $currentSection = '';
             if (isset($_POST['tab']) && $_POST['tab']) {
-                $current_section = $_POST['tab'];
+                $currentSection = $_POST['tab'];
             } else {
                 if (isset($_GET['tab']) && $_GET['tab']) {
-                    $current_section = $_GET['tab'];
+                    $currentSection = $_GET['tab'];
                 }
             }
 
             foreach ($this->settings as $section => $data) {
-
-                if ($current_section && $current_section != $section) {
+                if ($currentSection && $currentSection != $section) {
                     continue;
                 }
 
                 // Add section to page
-                add_settings_section($section, $data['title'], array($this, 'settingsSection'),
-                    'dkpdf_settings');
+                add_settings_section(
+                    $section,
+                    $data['title'],
+                    [$this, 'settingsSection'],
+                    'dkpdf_settings'
+                );
 
                 foreach ($data['fields'] as $field) {
-
                     // Validation callback for field
                     $validation = '';
                     if (isset($field['callback'])) {
@@ -455,14 +475,14 @@ class Settings
                     add_settings_field(
                         $field['id'],
                         $field['label'],
-                        array($this->fields, 'displayField'),
+                        [$this->fields, 'displayField'],
                         'dkpdf_settings',
                         $section,
-                        array('field' => $field, 'prefix' => 'dkpdf_')
+                        ['field' => $field, 'prefix' => 'dkpdf_']
                     );
                 }
 
-                if (!$current_section) {
+                if (!$currentSection) {
                     break;
                 }
             }
@@ -471,7 +491,6 @@ class Settings
 
     public function settingsSection($section)
     {
-
         $html = '<p> ' . $this->settings[$section['id']]['description'] . '</p>' . "\n";
         echo $html;
     }
@@ -485,7 +504,6 @@ class Settings
      */
     public function settingsPage()
     {
-
         if (isset($_GET['settings-updated'])) { ?>
             <div id="message" class="updated">
                 <p><?php _e('Settings saved.', 'dkpdf'); ?></p>
@@ -503,16 +521,14 @@ class Settings
 
         // Show page tabs
         if (is_array($this->settings) && 1 < count($this->settings)) {
-
             $html .= '<h2 class="nav-tab-wrapper">' . "\n";
+            $count = 0;
 
-            $c = 0;
             foreach ($this->settings as $section => $data) {
-
                 // Set tab class
                 $class = 'nav-tab';
                 if (!isset($_GET['tab'])) {
-                    if (0 == $c) {
+                    if (0 == $count) {
                         $class .= ' nav-tab-active';
                     }
                 } else {
@@ -529,8 +545,7 @@ class Settings
 
                 // Output tab
                 $html .= '<a href="' . $tab_link . '" class="' . esc_attr($class) . '">' . esc_html($data['title']) . '</a>' . "\n";
-
-                ++$c;
+                ++$count;
             }
 
             $html .= '</h2>' . "\n";
@@ -546,8 +561,8 @@ class Settings
 
         $html .= '<p class="submit">' . "\n";
         $html .= '<input type="hidden" name="tab" value="' . esc_attr($tab) . '" />' . "\n";
-        $html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr(__('Save Settings',
-                'dkpdf')) . '" />' . "\n";
+        $html .= '<input name="Submit" type="submit" class="button-primary" value="'
+            . esc_attr(__('Save Settings', 'dkpdf')) . '" />' . "\n";
         $html .= '</p>' . "\n";
         $html .= '</form>' . "\n";
 

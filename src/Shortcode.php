@@ -22,12 +22,11 @@ class Shortcode
 
     public function init()
     {
-
-        add_shortcode('dkpdf-button', array($this, 'buttonShortcode'));
-        add_shortcode('dkpdf-remove', array($this, 'removeShortcode'));
-        add_shortcode('dkpdf-pagebreak', array($this, 'pagebreak'));
-        add_shortcode('dkpdf-columns', array($this, 'columnsShortcode'));
-        add_shortcode('dkpdf-columnbreak', array($this, 'columnbreakShortcode'));
+        add_shortcode('dkpdf-button', [$this, 'buttonShortcode']);
+        add_shortcode('dkpdf-remove', [$this, 'removeShortcode']);
+        add_shortcode('dkpdf-pagebreak', [$this, 'pagebreak']);
+        add_shortcode('dkpdf-columns', [$this, 'columnsShortcode']);
+        add_shortcode('dkpdf-columnbreak', [$this, 'columnbreakShortcode']);
     }
 
     /**
@@ -37,7 +36,6 @@ class Shortcode
      */
     public function buttonShortcode($atts, $content = null)
     {
-
         ob_start();
 
         $this->template->part('dkpdf-button');
@@ -53,16 +51,12 @@ class Shortcode
      */
     public function removeShortcode($atts, $content = null)
     {
-
-        $atts = shortcode_atts(array(
-            'tag' => '',
-        ), $atts);
+        $atts = shortcode_atts(['tag' => ''], $atts);
 
         $pdf = get_query_var('pdf');
 
         $tag = sanitize_text_field($atts['tag']);
         if ($tag !== '' && $pdf) {
-
             remove_shortcode($tag);
             add_shortcode($tag, '__return_false');
 
@@ -84,7 +78,6 @@ class Shortcode
      */
     public function pagebreak()
     {
-
         $pdf = get_query_var('pdf');
         if ($pdf) {
             return '<pagebreak />';
@@ -105,12 +98,11 @@ class Shortcode
      */
     public function columnsShortcode($atts, $content = null)
     {
-
-        $atts = shortcode_atts(array(
+        $atts = shortcode_atts([
             'columns' => '2',
             'equal-columns' => 'false',
             'gap' => '10',
-        ), $atts);
+        ], $atts);
 
         $pdf = get_query_var('pdf');
 
@@ -136,7 +128,6 @@ class Shortcode
      */
     public function columnbreakShortcode($atts, $content = null)
     {
-
         $pdf = get_query_var('pdf');
         if ($pdf) {
             return '<columnbreak />';

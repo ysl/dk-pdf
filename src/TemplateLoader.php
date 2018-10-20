@@ -57,7 +57,6 @@ class TemplateLoader
      * @return string
      */
     public function locateTemplate(array $templateNames) {
-
         $template = '';
 
         // Remove empty entries

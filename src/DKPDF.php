@@ -11,9 +11,7 @@ class DKPDF
 
     public function init()
     {
-
         if (is_admin()) {
-
             $fields = new Fields();
             (new Settings($fields));
 
