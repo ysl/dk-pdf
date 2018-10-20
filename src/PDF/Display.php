@@ -110,7 +110,6 @@ class Display
             $this->template->part('dkpdf-button');
 
             return ob_get_clean() . $output;
-
         } elseif ('after' === $buttonPosition) {
             ob_start();
             $this->template->part('dkpdf-button');
@@ -198,9 +197,11 @@ class Display
         $pdfButtonAction = (string)get_option('dkpdf_pdfbutton_action', 'open');
         if ('open' === $pdfButtonAction) {
             $this->mpdf->Output($title . '.pdf', 'I');
+        // phpcs:disable Inpsyde.CodeQuality.NoElse.ElseFound
         } else {
             $this->mpdf->Output($title . '.pdf', 'D');
         }
+        // phpcs:enable
     }
 
     /**

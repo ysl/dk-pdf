@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore
 /**
  * Plugin Name: DK PDF
  * Version: 1.9.6
@@ -19,10 +19,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// phpcs:disable Inpsyde.CodeQuality.NoTopLevelDefine.Found
 define('DKPDF_VERSION', '1.9.6');
 define('DKPDF_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('DKPDF_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('DKPDF_PLUGIN_FILE', __FILE__);
+// phpcs:enable
 
 /**
  * Initialize all the plugin things.
@@ -45,7 +47,6 @@ function initialize()
         );
 
         (new DKPDF)->init();
-
     } catch (\Throwable $error) {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             throw $error;

@@ -93,7 +93,6 @@ class Settings
 
         // settings assets
         add_action('admin_print_styles-' . $page, [$this, 'settingsAssets']);
-
     }
 
     /**
@@ -448,7 +447,7 @@ class Settings
             }
 
             foreach ($this->settings as $section => $data) {
-                if ($currentSection && $currentSection != $section) {
+                if ($currentSection && $currentSection !== $section) {
                     continue;
                 }
 
@@ -492,7 +491,7 @@ class Settings
     public function settingsSection($section)
     {
         $html = '<p> ' . $this->settings[$section['id']]['description'] . '</p>' . "\n";
-        echo $html;
+        echo wp_kses_post($html);
     }
 
     /**
@@ -506,7 +505,7 @@ class Settings
     {
         if (isset($_GET['settings-updated'])) { ?>
             <div id="message" class="updated">
-                <p><?php _e('Settings saved.', 'dkpdf'); ?></p>
+                <p><?php esc_attr_e('Settings saved.', 'dkpdf'); ?></p>
             </div>
         <?php }
 

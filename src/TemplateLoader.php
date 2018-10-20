@@ -56,7 +56,10 @@ class TemplateLoader
      * @param array $templateNames
      * @return string
      */
-    public function locateTemplate(array $templateNames) {
+    // phpcs:disable Generic.Metrics.NestingLevel.TooHigh
+    public function locateTemplate(array $templateNames)
+    {
+        // phpcs:enable
         $template = '';
 
         // Remove empty entries

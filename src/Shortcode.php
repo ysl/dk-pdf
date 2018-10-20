@@ -61,7 +61,9 @@ class Shortcode
             add_shortcode($tag, '__return_false');
 
             return do_shortcode($content);
+        // phpcs:disable Inpsyde.CodeQuality.NoElse.ElseFound
         } else {
+            // phpcs:enable
             if ($pdf) {
                 return '';
             }
@@ -84,6 +86,7 @@ class Shortcode
         }
     }
 
+    // phpcs:disable Inpsyde.CodeQuality.LineLength.TooLong
     /**
      * [dkpdf-columns]text[/dkpdf-columns]
      * https://mpdf.github.io/what-else-can-i-do/columns.html
@@ -96,6 +99,7 @@ class Shortcode
      * <columnbreak /> <column_break /> or <newcolumn /> (synonymous) can be included to force a new column.
      * (This will automatically disable any justification or readjustment of column heights.)
      */
+    // phpcs:enable
     public function columnsShortcode($atts, $content = null)
     {
         $atts = shortcode_atts([
@@ -109,16 +113,17 @@ class Shortcode
         if ($pdf) {
             $columns = sanitize_text_field($atts['columns']);
             $equalColumns = sanitize_text_field($atts['equal-columns']);
-            $vAlign = $equalColumns == 'true' ? 'vAlign="justify"' : '';
+            $vAlign = $equalColumns === 'true' ? 'vAlign="justify"' : '';
             $gap = sanitize_text_field($atts['gap']);
 
-            return '<columns column-count="' . $columns . '" ' . $vAlign . ' column-gap="' . $gap . '" />' . do_shortcode($content) . '<columns column-count="1">';
-        } else {
-            remove_shortcode('dkpdf-columnbreak');
-            add_shortcode('dkpdf-columnbreak', '__return_false');
-
-            return do_shortcode($content);
+            return '<columns column-count="' . $columns . '" ' . $vAlign . ' column-gap="'
+                . $gap . '" />' . do_shortcode($content) . '<columns column-count="1">';
         }
+
+        remove_shortcode('dkpdf-columnbreak');
+        add_shortcode('dkpdf-columnbreak', '__return_false');
+
+        return do_shortcode($content);
     }
 
     /**
@@ -132,8 +137,7 @@ class Shortcode
         if ($pdf) {
             return '<columnbreak />';
         }
+
+        return '';
     }
-
 }
-
-

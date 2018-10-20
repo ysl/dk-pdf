@@ -42,7 +42,7 @@ class MetaBox
      */
     public function metaboxSave($postId)
     {
-        if(!wp_verify_nonce($_POST['dkpdf_nonce'], 'dkpdf_nonce_action')) {
+        if (!wp_verify_nonce($_POST['dkpdf_nonce'], 'dkpdf_nonce_action')) {
             return false;
         }
 
@@ -69,8 +69,10 @@ class MetaBox
      */
     public function metaboxContent()
     {
+        // phpcs:disable Inpsyde.CodeQuality.VariablesName.SnakeCaseVar
         global $post_id;
         $fields = get_post_custom($post_id);
+        // phpcs:enable
         $fieldData = $this->getCustomFieldsSettings();
 
         $html = $this->createHtml($fieldData, $fields);
