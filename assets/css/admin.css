@@ -12,6 +12,11 @@
 .dkpdf-item h3 { font-size:180%;}
 .dkpdf-item p { font-size:130%;}
 
+#dkpdf_settings label.full-width {
+	display:inline-block;
+	width:100%;
+}
+
 #editor {
 	height:300px;
 }
