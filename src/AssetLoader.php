@@ -66,6 +66,8 @@ class AssetLoader
     public function adminEnqueueScripts($hook)
     {
         if (isset($hook) && $hook === 'toplevel_page_dkpdf_settings') {
+            wp_enqueue_media();
+
             wp_register_script(
                 'dkpdf-settings-admin',
                 plugins_url('dk-pdf/assets/js/settings-admin.js'),

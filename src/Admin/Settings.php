@@ -88,27 +88,6 @@ class Settings
             'dkpdf-support',
             new Page\Support()
         );
-
-        // settings assets
-        add_action('admin_print_styles-' . $page, [$this, 'settingsAssets']);
-    }
-
-    /**
-     * Load settings JS & CSS
-     *
-     * @return void
-     */
-    public function settingsAssets()
-    {
-        wp_enqueue_media();
-
-        wp_register_script(
-            'dkpdf-settings-js',
-            plugins_url('dk-pdf/assets/js/settings-admin.js'),
-            ['jquery'],
-            DKPDF_VERSION
-        );
-        wp_enqueue_script('dkpdf-settings-js');
     }
 
     /**
