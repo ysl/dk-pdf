@@ -2,6 +2,7 @@
 
 namespace Dinamiko\DKPDF;
 
+use Dinamiko\DKPDF\Admin\Config;
 use Dinamiko\DKPDF\Admin\Fields;
 use Dinamiko\DKPDF\Admin\Settings;
 use Dinamiko\DKPDF\PDF\Display;
@@ -13,7 +14,8 @@ class DKPDF
     {
         if (is_admin()) {
             $fields = new Fields();
-            (new Settings($fields));
+            $config = new Config();
+            (new Settings($fields, $config));
 
             (new MetaBox())->init();
         }
