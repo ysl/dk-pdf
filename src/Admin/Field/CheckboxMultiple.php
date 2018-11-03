@@ -48,9 +48,11 @@ class CheckboxMultiple
                 . $value . '</label> ';
         }
 
-        $output .= '<label class="full-width" for="' . esc_attr($this->field['id']) . '">' . "\n"
-            . '<span class="description">' . $this->field['description'] . '</span>' . "\n"
-            . '</label>' . "\n";
+        if ($this->field['description'] !== '') {
+            $output .= '<label class="full-width" for="' . esc_attr($this->field['id']) . '">' . "\n"
+                . '<span class="description">' . $this->field['description'] . '</span>' . "\n"
+                . '</label>' . "\n";
+        }
 
         return $output;
     }

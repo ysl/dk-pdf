@@ -50,9 +50,12 @@ class Image
         $output .= '<input id="' . $optionName
             . '" class="image_data_field" type="hidden" name="' . $optionName
             . '" value="' . esc_attr($option) . '"/><br/>' . "\n";
-        $output .= '<label for="' . esc_attr($this->field['id']) . '">' . "\n"
-            . '<span class="description">' . $this->field['description'] . '</span>' . "\n"
-            . '</label>' . "\n";
+
+        if ($this->field['description'] !== '') {
+            $output .= '<label for="' . esc_attr($this->field['id']) . '">' . "\n"
+                . '<span class="description">' . $this->field['description'] . '</span>' . "\n"
+                . '</label>' . "\n";
+        }
 
         return $output;
     }
