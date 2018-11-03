@@ -28,16 +28,9 @@ class Settings
         $this->fields = $fields;
         $this->config = $config;
 
-        // Initialise settings
         add_action('init', [$this, 'initSettings'], 11);
-
-        // Register plugin settings
         add_action('admin_init', [$this, 'registerSettings']);
-
-        // Add settings page to menu
-        add_action('admin_menu', [$this, 'addMenuItem']);
-
-        // Add settings link to plugins page
+        add_action('admin_menu', [$this, 'createAdminMenu']);
         add_filter(
             'plugin_action_links_' . plugin_basename(DKPDF_PLUGIN_FILE),
             [$this, 'addSettingsLink']
@@ -46,9 +39,7 @@ class Settings
 
     /**
      * Initialise settings.
-     *
      * @wp-hook init
-     * @return void
      */
     public function initSettings()
     {
@@ -57,13 +48,11 @@ class Settings
 
     /**
      * Adds DK PDF admin menu.
-     *
      * @wp-hook admin_menu
-     * @return void
      */
-    public function addMenuItem()
+    public function createAdminMenu()
     {
-        $page = add_menu_page(
+        add_menu_page(
             'DK PDF',
             'DK PDF',
             'manage_options',
@@ -91,8 +80,7 @@ class Settings
     }
 
     /**
-     * Add settings link to plugin list table
-     *
+     * Add settings link to plugin list table.
      * @param  array $links Existing links
      * @return array Modified links
      */
@@ -106,69 +94,66 @@ class Settings
     }
 
     /**
-     * Register plugin settings
-     *
+     * Register plugin settings.
      * @wp-hook admin_init
-     * @return void
      */
     public function registerSettings()
     {
-        if (is_array($this->settings)) {
-            // Check posted/selected tab
-            $currentSection = '';
-            if (isset($_POST['tab']) && $_POST['tab']) {
-                $currentSection = $_POST['tab'];
-            } else {
-                if (isset($_GET['tab']) && $_GET['tab']) {
-                    $currentSection = $_GET['tab'];
-                }
+        $currentSection = '';
+        if (isset($_POST['tab']) && $_POST['tab']) {
+            $currentSection = filter_var($_POST['tab'], FILTER_SANITIZE_STRING);
+        } elseif (isset($_GET['tab']) && $_GET['tab']) {
+            $currentSection = filter_var($_GET['tab'], FILTER_SANITIZE_STRING);
+        }
+
+        foreach ($this->settings as $section => $data) {
+            if ($currentSection && $currentSection !== $section) {
+                continue;
             }
 
-            foreach ($this->settings as $section => $data) {
-                if ($currentSection && $currentSection !== $section) {
-                    continue;
-                }
+            add_settings_section(
+                $section,
+                $data['title'],
+                [$this, 'settingsSection'],
+                'dkpdf_settings'
+            );
 
-                // Add section to page
-                add_settings_section(
-                    $section,
-                    $data['title'],
-                    [$this, 'settingsSection'],
-                    'dkpdf_settings'
-                );
+            $this->registerFields($data, $section);
 
-                foreach ($data['fields'] as $field) {
-                    // Validation callback for field
-                    $validation = '';
-                    if (isset($field['callback'])) {
-                        $validation = $field['callback'];
-                    }
-
-                    // Register field
-                    $optionName = 'dkpdf_' . $field['id'];
-                    register_setting('dkpdf_settings', $optionName, $validation);
-
-                    // Add field to page
-                    add_settings_field(
-                        $field['id'],
-                        $field['label'],
-                        [$this->fields, 'displayField'],
-                        'dkpdf_settings',
-                        $section,
-                        ['field' => $field, 'prefix' => 'dkpdf_']
-                    );
-                }
-
-                if (!$currentSection) {
-                    break;
-                }
+            if (!$currentSection) {
+                break;
             }
         }
     }
 
+    /**
+     * Display section description.
+     * @param array $section
+     */
     public function settingsSection($section)
     {
         $html = '<p> ' . $this->settings[$section['id']]['description'] . '</p>' . "\n";
         echo wp_kses_post($html);
+    }
+
+    /**
+     * @param array $data
+     * @param string $section
+     */
+    private function registerFields($data, $section)
+    {
+        foreach ($data['fields'] as $field) {
+            $optionName = 'dkpdf_' . $field['id'];
+            register_setting('dkpdf_settings', $optionName);
+
+            add_settings_field(
+                $field['id'],
+                $field['label'],
+                [$this->fields, 'displayField'],
+                'dkpdf_settings',
+                $section,
+                ['field' => $field, 'prefix' => 'dkpdf_']
+            );
+        }
     }
 }

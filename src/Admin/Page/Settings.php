@@ -84,6 +84,5 @@ class Settings
         $html .= '</div>' . "\n";
 
         echo $html;
-
     }
 }
