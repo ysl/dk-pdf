@@ -27,7 +27,13 @@ class Settings
     {
         $this->fields = $fields;
         $this->config = $config;
+    }
 
+    /**
+     * Init hooks.
+     */
+    public function init()
+    {
         add_action('init', [$this, 'initSettings'], 11);
         add_action('admin_init', [$this, 'registerSettings']);
         add_action('admin_menu', [$this, 'createAdminMenu']);
@@ -86,10 +92,7 @@ class Settings
      */
     public function addSettingsLink($links)
     {
-        $settingsLink = '<a href="admin.php?page=' . 'dkpdf_settings">'
-            . __('Settings', 'dkpdf') . '</a>';
-        array_push($links, $settingsLink);
-
+        $links[] = '<a href="admin.php?page=dkpdf_settings">' . __('Settings', 'dkpdf') . '</a>';
         return $links;
     }
 
@@ -100,10 +103,13 @@ class Settings
     public function registerSettings()
     {
         $currentSection = '';
-        if (isset($_POST['tab']) && $_POST['tab']) {
-            $currentSection = filter_var($_POST['tab'], FILTER_SANITIZE_STRING);
-        } elseif (isset($_GET['tab']) && $_GET['tab']) {
-            $currentSection = filter_var($_GET['tab'], FILTER_SANITIZE_STRING);
+        // phpcs:disable WordPress.CSRF.NonceVerification.NoNonceVerification
+        // phpcs:disable WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+        // phpcs:disable WordPress.VIP.ValidatedSanitizedInput.MissingUnslash
+        // phpcs:disable WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+        if (isset($_REQUEST['tab']) && $_REQUEST['tab']) {
+            $currentSection = filter_var($_REQUEST['tab'], FILTER_SANITIZE_STRING);
+            // phpcs: enable
         }
 
         foreach ($this->settings as $section => $data) {

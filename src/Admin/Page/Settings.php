@@ -17,72 +17,64 @@ class Settings
         $this->settings = $settings;
     }
 
+    // phpcs:disable Generic.Metrics.NestingLevel.TooHigh
+    // phpcs:disable Inpsyde.CodeQuality.FunctionLength.TooLong
     public function __invoke()
     {
-        if (isset($_GET['settings-updated'])) { ?>
+        // phpcs:disable WordPress.CSRF.NonceVerification.NoNonceVerification
+        // phpcs:disable WordPress.VIP.SuperGlobalInputUsage.AccessDetected
+        $settingsUpdated = isset($_GET['settings-updated']);
+        if ($settingsUpdated) { ?>
             <div id="message" class="updated">
                 <p><?php esc_attr_e('Settings saved.', 'dkpdf'); ?></p>
             </div>
-        <?php }
+        <?php } ?>
 
-        // Build page HTML
-        $html = '<div class="wrap" id="' . 'dkpdf_settings">' . "\n";
-        $html .= '<h2>' . __('DK PDF Settings', 'dkpdf') . '</h2>' . "\n";
+        <div class="wrap" id="dkpdf_settings">
+            <h2><?= esc_attr__('DK PDF Settings', 'dkpdf') ?></h2>
 
-        $tab = '';
-        if (isset($_GET['tab']) && $_GET['tab']) {
-            $tab .= $_GET['tab'];
-        }
+            <?php
+            // phpcs:disable WordPress.VIP.ValidatedSanitizedInput.MissingUnslash
+            // phpcs:disable WordPress.VIP.ValidatedSanitizedInput.InputNotSanitized
+            $tab = isset($_GET['tab']) && $_GET['tab']
+                ? filter_var($_GET['tab'], FILTER_SANITIZE_STRING)
+                : '';
+            // phpcs: enable
 
-        // Show page tabs
-        if (is_array($this->settings) && 1 < count($this->settings)) {
-            $html .= '<h2 class="nav-tab-wrapper">' . "\n";
-            $count = 0;
+            if (count($this->settings) > 1) { ?>
+                <div class="nav-tab-wrapper">
+                    <?php
+                    $count = 0;
+                    foreach ($this->settings as $section => $data) {
+                        $active = !$tab && $count === 0 ? 'nav-tab-active' : '';
+                        if ($tab && $section === $tab) {
+                            $active = 'nav-tab-active';
+                        }
 
-            foreach ($this->settings as $section => $data) {
-                // Set tab class
-                $class = 'nav-tab';
-                if (!isset($_GET['tab'])) {
-                    if (0 == $count) {
-                        $class .= ' nav-tab-active';
-                    }
-                } else {
-                    if (isset($_GET['tab']) && $section == $_GET['tab']) {
-                        $class .= ' nav-tab-active';
-                    }
-                }
+                        $tabLink = add_query_arg(['tab' => $section]);
+                        if ($settingsUpdated) {
+                            $tabLink = remove_query_arg('settings-updated', $tabLink);
+                        } ?>
 
-                // Set tab link
-                $tab_link = add_query_arg(array('tab' => $section));
-                if (isset($_GET['settings-updated'])) {
-                    $tab_link = remove_query_arg('settings-updated', $tab_link);
-                }
+                        <a href="<?= esc_url($tabLink) ?>" class="nav-tab <?= esc_attr($active) ?>">
+                            <?= esc_attr($data['title']) ?>
+                        </a>
+                        <?php $count++;
+                    } ?>
+                </div>
+            <?php } ?>
+        </div>
 
-                // Output tab
-                $html .= '<a href="' . $tab_link . '" class="' . esc_attr($class) . '">' . esc_html($data['title']) . '</a>' . "\n";
-                ++$count;
-            }
-
-            $html .= '</h2>' . "\n";
-        }
-
-        $html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
-
-        // Get settings fields
-        ob_start();
-        settings_fields('dkpdf_settings');
-        do_settings_sections('dkpdf_settings');
-        $html .= ob_get_clean();
-
-        $html .= '<p class="submit">' . "\n";
-        $html .= '<input type="hidden" name="tab" value="' . esc_attr($tab) . '" />' . "\n";
-        $html .= '<input name="Submit" type="submit" class="button-primary" value="'
-            . esc_attr(__('Save Settings', 'dkpdf')) . '" />' . "\n";
-        $html .= '</p>' . "\n";
-        $html .= '</form>' . "\n";
-
-        $html .= '</div>' . "\n";
-
-        echo $html;
-    }
+        <form method="post" action="options.php" enctype="multipart/form-data">
+            <?php
+            settings_fields('dkpdf_settings');
+            do_settings_sections('dkpdf_settings');
+            ?>
+            <div class="submit">
+                <input type="hidden" name="tab" value="<?= esc_attr($tab) ?>"/>
+                <input name="Submit" type="submit" class="button-primary"
+                       value="<?= esc_attr_e('Save Settings', 'dkpdf') ?>"/>
+            </div>
+        </form>
+    <?php }
 }
