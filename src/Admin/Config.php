@@ -124,6 +124,14 @@ class Config
                     'placeholder' => '15',
                 ],
                 [
+                    'id' => 'margin_footer',
+                    'label' => __('Margin footer', 'dkpdf'),
+                    'description' => 'In points (pt)',
+                    'type' => 'number',
+                    'default' => '15',
+                    'placeholder' => '15',
+                ],
+                [
                     'id' => 'enable_protection',
                     'label' => __('Enable PDF protection', 'dkpdf'),
                     'description' => __(

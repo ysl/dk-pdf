@@ -143,6 +143,7 @@ class Display
                 'margin_top' => get_option('dkpdf_margin_top', '50'),
                 'margin_bottom' => get_option('dkpdf_margin_bottom', '30'),
                 'margin_header' => get_option('dkpdf_margin_header', '15'),
+                'margin_footer' => get_option('dkpdf_margin_footer', '15'),
             ];
 
             $this->mpdf = new \Mpdf\Mpdf(apply_filters('dkpdf_pdf_config', $config));
@@ -193,6 +194,8 @@ class Display
         $title = apply_filters('dkpdf_pdf_filename', get_the_title($post->ID));
         $this->mpdf->SetTitle($title);
         $this->mpdf->SetAuthor(apply_filters('dkpdf_pdf_author', get_bloginfo('name')));
+
+        do_action('dkpdf_pdf_pre_output', $this->mpdf, $post);
 
         $pdfButtonAction = (string)get_option('dkpdf_pdfbutton_action', 'open');
         if ('open' === $pdfButtonAction) {
