@@ -2,9 +2,9 @@
 Contributors: dinamiko
 Tags: wp to pdf, wordpress to pdf, acrobat, pdf, post to pdf, generate pdf, mpdf, generate, convert, create, convert pdf, create pdf
 Requires at least: 3.9.6
-Tested up to: 4.9
+Tested up to: 5.0
 Requires PHP: 5.6
-Stable tag: 1.9.6
+Stable tag: 1.10.0
 
 WordPress to PDF made easy.
 
@@ -61,6 +61,10 @@ Font Awesome, the iconic font and CSS toolkit
 http://fortawesome.github.io/Font-Awesome/
 
 == Changelog ==
+
+= 1.10.0 =
+* New margin footer setting. Thanks to [Ted Barnett](https://github.com/contemplate).
+* New action `dkpdf_pdf_pre_output`. Thanks to [Justin Sainton](https://github.com/JustinSainton).
 
 = 1.9.6 =
 * Update mPDF library to latest version.

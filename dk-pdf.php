@@ -1,7 +1,7 @@
 <?php // phpcs:ignore
 /**
  * Plugin Name: DK PDF
- * Version: 1.9.6
+ * Version: 1.10.0
  * Plugin URI: http://wp.dinamiko.com/demos/dkpdf
  * Description: WordPress to PDF made easy.
  * Author: Emili Castells

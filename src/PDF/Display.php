@@ -131,6 +131,11 @@ class Display
     {
         $pdf = (string)get_query_var('pdf');
         if ($pdf) {
+            $defaultConfig = (new \Mpdf\Config\ConfigVariables())->getDefaults();
+            $mpdfFontDir = apply_filters('dkpdf_mpdf_font_dir', $defaultConfig['fontDir']);
+            $defaultFontConfig = (new \Mpdf\Config\FontVariables())->getDefaults();
+            $mpdfFontData = apply_filters('dkpdf_mpdf_font_data', $defaultFontConfig['fontdata']);
+
             $config = [
                 'tempDir' => apply_filters('dkpdf_pdf_temp_dir', DKPDF_PLUGIN_DIR . '/tmp'),
                 'default_font_size' => get_option('dkpdf_font_size', '12'),
@@ -144,6 +149,8 @@ class Display
                 'margin_bottom' => get_option('dkpdf_margin_bottom', '30'),
                 'margin_header' => get_option('dkpdf_margin_header', '15'),
                 'margin_footer' => get_option('dkpdf_margin_footer', '15'),
+                'fontDir' => $mpdfFontDir,
+                'fontdata' => $mpdfFontData,
             ];
 
             $this->mpdf = new \Mpdf\Mpdf(apply_filters('dkpdf_pdf_config', $config));
