@@ -115,7 +115,16 @@
   			 	'p' => $pdf,
   			 	'post_type' => $post_type,
   			 	'post_status' => 'publish'
-  			);
+			);
+
+			// Query by post tag.
+			if ( isset( $_GET['pdf_tag_name'] ) ) {
+				$args = [
+					'tag' => sanitize_text_field( $_GET['pdf_tag_name'] ),
+					'post_type' => 'post',
+					'post_status' => 'publish'
+				];
+			}
 
 		    $the_query = new WP_Query( apply_filters( 'dkpdf_query_args', $args ) );
 

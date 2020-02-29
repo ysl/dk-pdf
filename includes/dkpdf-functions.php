@@ -108,8 +108,12 @@ add_filter( 'the_content', 'dkpdf_display_pdf_button' );
 function dkpdf_output_pdf( $query ) {
 
   $pdf = sanitize_text_field( get_query_var( 'pdf' ) );
+  $pdf_tag_name = '';
+  if ( isset( $_GET['pdf_tag_name'] ) ) {
+    $pdf_tag_name = sanitize_text_field( $_GET['pdf_tag_name'] );
+  }
 
-  if( $pdf ) {
+  if( $pdf || $pdf_tag_name ) {
 
 	  require_once  realpath(__DIR__ . '/..') . '/vendor/autoload.php';
 
@@ -209,8 +213,13 @@ function dkpdf_output_pdf( $query ) {
       // action to do (open or download)
       $pdfbutton_action = sanitize_option( 'dkpdf_pdfbutton_action', get_option( 'dkpdf_pdfbutton_action', 'open' ) );
 
-	  global $post;
-      $title = apply_filters( 'dkpdf_pdf_filename', get_the_title( $post->ID ) );
+      global $post;
+      if ( $pdf_tag_name ) {
+        $title = $pdf_tag_name;
+      } else {
+        $title = get_the_title( $post->ID );
+      }
+      $title = apply_filters( 'dkpdf_pdf_filename', $title );
 
       $mpdf->SetTitle( $title );
       $mpdf->SetAuthor( apply_filters( 'dkpdf_pdf_author', get_bloginfo( 'name' ) ) );

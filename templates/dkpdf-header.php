@@ -40,7 +40,12 @@
 					// check if Header show title is checked
 					if ( $pdf_header_show_title ) {
 
-						echo apply_filters( 'dkpdf_header_title', get_the_title( $post->ID ) );
+						if ( isset( $_GET['pdf_tag_name'] ) ) {
+							$title = sanitize_text_field( $_GET['pdf_tag_name'] );
+						} else {
+							$title = get_the_title( $post->ID );
+						}
+						echo apply_filters( 'dkpdf_header_title', $title );
 
 					} 
 

@@ -36,7 +36,12 @@
 					// check if Footer show title is checked
 					if ( $pdf_footer_show_title ) {
 
-						echo get_the_title( $post->ID );
+						if ( isset( $_GET['pdf_tag_name'] ) ) {
+							$title = sanitize_text_field( $_GET['pdf_tag_name'] );
+						} else {
+							$title = get_the_title( $post->ID );
+						}
+						echo $title;
 
 					} 
 
