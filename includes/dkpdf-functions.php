@@ -140,9 +140,16 @@ function dkpdf_output_pdf( $query ) {
       // fonts
       $mpdf_default_config = (new Mpdf\Config\ConfigVariables())->getDefaults();
       $dkpdf_mpdf_font_dir = apply_filters('dkpdf_mpdf_font_dir',$mpdf_default_config['fontDir']);
+      $dkpdf_mpdf_font_dir[] = __DIR__ . '/../assets/fonts';
 
       $mpdf_default_font_config = (new Mpdf\Config\FontVariables())->getDefaults();
       $dkpdf_mpdf_font_data = apply_filters('dkpdf_mpdf_font_data',$mpdf_default_font_config['fontdata']);
+
+      // Add taipei font
+      $dkpdf_mpdf_font_data['taipei'] = [
+        'R' => 'TaipeiSansTCBeta-Regular.ttf',
+        'B' => 'TaipeiSansTCBeta-Bold.ttf'
+      ];
 
       // temp directory
       $dkpdf_mpdf_temp_dir = apply_filters('dkpdf_mpdf_temp_dir',realpath( __DIR__ . '/..' ) . '/tmp');
@@ -158,6 +165,7 @@ function dkpdf_output_pdf( $query ) {
           'margin_header'     => $dkpdf_margin_header,
           'fontDir'           => $dkpdf_mpdf_font_dir,
           'fontdata'          => $dkpdf_mpdf_font_data,
+          'default_font'      => 'taipei',  // Set to default
       ]);
 
       // creating and setting the pdf
