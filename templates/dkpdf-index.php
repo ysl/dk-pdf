@@ -118,9 +118,9 @@
 			);
 
 			// Query by post tag.
-			if ( isset( $_GET['pdf_tag_name'] ) ) {
+			if ( isset( $_GET['pdf_tag_slug'] ) ) {
 				$args = [
-					'tag' => sanitize_text_field( $_GET['pdf_tag_name'] ),
+					'tag' => sanitize_text_field( $_GET['pdf_tag_slug'] ),
 					'post_type' => 'post',
 					'post_status' => 'publish'
 				];

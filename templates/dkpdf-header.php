@@ -14,6 +14,12 @@
     $pdf_header_image_attachment = wp_get_attachment_image_src( $pdf_header_image, 'full' );
     $pdf_header_show_title = sanitize_option( 'dkpdf_pdf_header_show_title', get_option( 'dkpdf_pdf_header_show_title' ) );
     $pdf_header_show_pagination = sanitize_option( 'dkpdf_pdf_header_show_pagination', get_option( 'dkpdf_pdf_header_show_pagination' ) );
+
+	// Query tag name.
+	if ( isset( $_GET['pdf_tag_slug'] ) ) {
+		$term = get_term_by( 'slug', $_GET['pdf_tag_slug'], 'post_tag' );
+		$tag_name = $term->name;
+	}
 ?>
 
 <?php
@@ -40,8 +46,8 @@
 					// check if Header show title is checked
 					if ( $pdf_header_show_title ) {
 
-						if ( isset( $_GET['pdf_tag_name'] ) ) {
-							$title = sanitize_text_field( $_GET['pdf_tag_name'] );
+						if ( isset( $_GET['pdf_tag_slug'] ) ) {
+							$title = $tag_name;
 						} else {
 							$title = get_the_title( $post->ID );
 						}

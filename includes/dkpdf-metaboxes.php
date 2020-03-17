@@ -140,3 +140,9 @@ function dkpdf_meta_box_save ( $post_id ) {
 }
 
 add_action( 'save_post', 'dkpdf_meta_box_save' );
+
+// Add pdf download link to tag list.
+add_filter( 'post_tag_row_actions', function( $actions, $tag ) {
+	$actions['download_pdf'] = '<a href="' . home_url('?pdf_tag_slug=' . $tag->slug) . '" target="_blank">下載PDF</a>';
+	return $actions;
+}, 10, 2 );
