@@ -126,22 +126,32 @@
 				];
 			}
 
-		    $the_query = new WP_Query( apply_filters( 'dkpdf_query_args', $args ) );
+			$the_query = new WP_Query( apply_filters( 'dkpdf_query_args', $args ) );
+			$count = (int)$the_query->found_posts;
+			$index = 0;
 
 		    if ( $the_query->have_posts() ) {
 
 		    	while ( $the_query->have_posts() ) {
 		    	    $the_query->the_post();
 		    	    global $post;
-		    	    ?>
+					?>
 
+					<h1><?php the_title(); ?></h1>
+					<p><?php echo get_the_date(); ?></p>
 		    	    <div class="dkpdf-content">
 
 		    	    	<?php the_content(); ?>
 
-		    		</div>
+					</div>
 
-		    	<?php }
+					<?php if ($index < $count - 1): ?>
+					<pagebreak page-break-type="slice" />
+					<?php endif; ?>
+
+					<?php
+					$index++;
+				}
 
 		    } else {
 
