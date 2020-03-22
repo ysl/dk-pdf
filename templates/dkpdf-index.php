@@ -119,11 +119,21 @@
 
 			// Query by post tag.
 			if ( isset( $_GET['pdf_tag_slug'] ) ) {
-				$args = [
-					'tag' => sanitize_text_field( $_GET['pdf_tag_slug'] ),
+				$tag_id = -1;
+				// Don't use get_term_by(), it conflict with polylang plugin.
+				$terms = get_terms( [
+					'slug' => sanitize_text_field( $_GET['pdf_tag_slug'] ),
+				] );
+				if ( count( $terms ) > 0 ) {
+					$tag_id = $terms[0]->term_id;
+				}
+
+				$args = array(
+					'numberposts' => -1,
+					'tag__in' => [$tag_id],
 					'post_type' => 'post',
 					'post_status' => 'publish'
-				];
+				);
 			}
 
 			$the_query = new WP_Query( apply_filters( 'dkpdf_query_args', $args ) );
