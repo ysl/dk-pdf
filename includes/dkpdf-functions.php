@@ -215,7 +215,15 @@ function dkpdf_output_pdf( $query ) {
 
       global $post;
       if ( $pdf_tag_slug ) {
-        $title = $pdf_tag_slug;
+        // Get the name of tag.
+        $terms = get_terms( [
+          'slug' => sanitize_text_field( $pdf_tag_slug ),
+        ] );
+        if ( count( $terms ) > 0 ) {
+          $title = $terms[0]->name;
+        } else {
+          $title = $pdf_tag_slug;
+        }
       } else {
         $title = get_the_title( $post->ID );
       }
