@@ -147,6 +147,7 @@
 		    	    global $post;
 					?>
 
+					<bookmark content="<?php the_title(); ?>" level="0" />
 					<h1><?php the_title(); ?></h1>
 					<p><?php echo get_the_date(); ?></p>
 		    	    <div class="dkpdf-content">
