@@ -136,24 +136,45 @@
 				);
 			}
 
-			$the_query = new WP_Query( apply_filters( 'dkpdf_query_args', $args ) );
-			$count = (int)$the_query->found_posts;
-			$index = 0;
+			$posts = get_posts( apply_filters( 'dkpdf_query_args', $args ) );
+			$count = count($posts);
 
-		    if ( $the_query->have_posts() ) {
+			/**
+			 * Sort by id then post_date.
+			 */
+			function get_sort_num($post) {
+				$ts = strtotime($post->post_date_gmt);
+				$ts_sort= 9999999999 - $ts;
 
-		    	while ( $the_query->have_posts() ) {
-		    	    $the_query->the_post();
-		    	    global $post;
+				$categories = get_the_category($post->ID);
+				$slugs = array_map(function($c) { return $c->slug; }, $categories);
+				foreach ($slugs as $slug) {
+					if (preg_match('/([0-9]+)-([0-9]+)-(\w+)/', $slug, $matches)) {
+						// Secondary id
+						$secondary_id = str_pad($matches[1], 2, '0', STR_PAD_LEFT) . str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+						return (int)"{$secondary_id}{$ts_sort}";
+					} else if (preg_match('/([0-9]+)-(\w+)/', $slug, $matches)) {
+						// Primary id
+						$primary_id = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+						return (int)"{$primary_id}00{$ts_sort}";
+					}
+				}
+				return (int)"9999{$ts_sort}";
+			};
+			usort($posts, function($a, $b) {
+				return get_sort_num($a) >= get_sort_num($b);
+			});
+
+		    if ( $count > 0 ) {
+
+				foreach ($posts as $index => $post) {
 					?>
 
-					<bookmark content="<?php the_title(); ?>" level="0" />
-					<h1><?php the_title(); ?></h1>
-					<p><?php echo get_the_date(); ?></p>
+					<bookmark content="<?php echo $post->post_title; ?>" level="0" />
+					<h1><?php echo $post->post_title; ?></h1>
+					<p><?php echo $post->post_date; ?></p>
 		    	    <div class="dkpdf-content">
-
-		    	    	<?php the_content(); ?>
-
+		                <?php echo $post->post_content; ?>
 					</div>
 
 					<?php if ($index < $count - 1): ?>
@@ -161,15 +182,12 @@
 					<?php endif; ?>
 
 					<?php
-					$index++;
 				}
 
 		    } else {
 
 		    	echo 'no results';
 		    }
-
-		    wp_reset_postdata();
 
 	    }
 
