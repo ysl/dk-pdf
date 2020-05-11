@@ -168,11 +168,26 @@
 		    if ( $count > 0 ) {
 
 				foreach ($posts as $index => $post) {
+
+					// Check if the post is cover.
+					$categories = get_the_category($post->ID);
+					$slugs = array_map(function($c) { return $c->slug; }, $categories);
+					$is_cover = false;
+					foreach ($slugs as $slug) {
+						if (strpos($slug, 'cover') !== false) {
+							$is_cover = true;
+							break;
+						}
+					}
+
 					?>
 
+					<?php if (!$is_cover): ?>
 					<bookmark content="<?php echo $post->post_title; ?>" level="0" />
 					<h1><?php echo $post->post_title; ?></h1>
 					<p><?php echo $post->post_date; ?></p>
+					<?php endif; ?>
+
 		    	    <div class="dkpdf-content">
 		                <?php echo $post->post_content; ?>
 					</div>
